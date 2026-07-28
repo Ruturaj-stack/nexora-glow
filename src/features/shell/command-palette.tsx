@@ -42,12 +42,7 @@ export function CommandPalette() {
   ];
 
   return (
-    <CommandDialog
-      open={paletteOpen}
-      onOpenChange={setPaletteOpen}
-      title="Command palette"
-      description="Navigate Nexora or trigger an action"
-    >
+    <CommandDialog open={paletteOpen} onOpenChange={setPaletteOpen}>
       <CommandInput placeholder="Type a command or search…" />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
