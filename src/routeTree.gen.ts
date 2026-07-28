@@ -9,8 +9,56 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as MemoryRouteImport } from './routes/memory'
+import { Route as FilesRouteImport } from './routes/files'
+import { Route as DevicesRouteImport } from './routes/devices'
+import { Route as DeveloperRouteImport } from './routes/developer'
+import { Route as ChatRouteImport } from './routes/chat'
+import { Route as AutomationRouteImport } from './routes/automation'
 import { Route as IndexRouteImport } from './routes/index'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MemoryRoute = MemoryRouteImport.update({
+  id: '/memory',
+  path: '/memory',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FilesRoute = FilesRouteImport.update({
+  id: '/files',
+  path: '/files',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DevicesRoute = DevicesRouteImport.update({
+  id: '/devices',
+  path: '/devices',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeveloperRoute = DeveloperRouteImport.update({
+  id: '/developer',
+  path: '/developer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChatRoute = ChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AutomationRoute = AutomationRouteImport.update({
+  id: '/automation',
+  path: '/automation',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +67,144 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/automation': typeof AutomationRoute
+  '/chat': typeof ChatRoute
+  '/developer': typeof DeveloperRoute
+  '/devices': typeof DevicesRoute
+  '/files': typeof FilesRoute
+  '/memory': typeof MemoryRoute
+  '/settings': typeof SettingsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/automation': typeof AutomationRoute
+  '/chat': typeof ChatRoute
+  '/developer': typeof DeveloperRoute
+  '/devices': typeof DevicesRoute
+  '/files': typeof FilesRoute
+  '/memory': typeof MemoryRoute
+  '/settings': typeof SettingsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/automation': typeof AutomationRoute
+  '/chat': typeof ChatRoute
+  '/developer': typeof DeveloperRoute
+  '/devices': typeof DevicesRoute
+  '/files': typeof FilesRoute
+  '/memory': typeof MemoryRoute
+  '/settings': typeof SettingsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/automation'
+    | '/chat'
+    | '/developer'
+    | '/devices'
+    | '/files'
+    | '/memory'
+    | '/settings'
+    | '/sitemap.xml'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/automation'
+    | '/chat'
+    | '/developer'
+    | '/devices'
+    | '/files'
+    | '/memory'
+    | '/settings'
+    | '/sitemap.xml'
+  id:
+    | '__root__'
+    | '/'
+    | '/automation'
+    | '/chat'
+    | '/developer'
+    | '/devices'
+    | '/files'
+    | '/memory'
+    | '/settings'
+    | '/sitemap.xml'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AutomationRoute: typeof AutomationRoute
+  ChatRoute: typeof ChatRoute
+  DeveloperRoute: typeof DeveloperRoute
+  DevicesRoute: typeof DevicesRoute
+  FilesRoute: typeof FilesRoute
+  MemoryRoute: typeof MemoryRoute
+  SettingsRoute: typeof SettingsRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/memory': {
+      id: '/memory'
+      path: '/memory'
+      fullPath: '/memory'
+      preLoaderRoute: typeof MemoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/files': {
+      id: '/files'
+      path: '/files'
+      fullPath: '/files'
+      preLoaderRoute: typeof FilesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/devices': {
+      id: '/devices'
+      path: '/devices'
+      fullPath: '/devices'
+      preLoaderRoute: typeof DevicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/developer': {
+      id: '/developer'
+      path: '/developer'
+      fullPath: '/developer'
+      preLoaderRoute: typeof DeveloperRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chat': {
+      id: '/chat'
+      path: '/chat'
+      fullPath: '/chat'
+      preLoaderRoute: typeof ChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/automation': {
+      id: '/automation'
+      path: '/automation'
+      fullPath: '/automation'
+      preLoaderRoute: typeof AutomationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,17 +217,15 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AutomationRoute: AutomationRoute,
+  ChatRoute: ChatRoute,
+  DeveloperRoute: DeveloperRoute,
+  DevicesRoute: DevicesRoute,
+  FilesRoute: FilesRoute,
+  MemoryRoute: MemoryRoute,
+  SettingsRoute: SettingsRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
