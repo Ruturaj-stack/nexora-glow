@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as MemoryRouteImport } from './routes/memory'
+import { Route as FilesRouteImport } from './routes/files'
 import { Route as DevicesRouteImport } from './routes/devices'
 import { Route as ChatRouteImport } from './routes/chat'
 import { Route as IndexRouteImport } from './routes/index'
@@ -17,6 +18,11 @@ import { Route as IndexRouteImport } from './routes/index'
 const MemoryRoute = MemoryRouteImport.update({
   id: '/memory',
   path: '/memory',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FilesRoute = FilesRouteImport.update({
+  id: '/files',
+  path: '/files',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DevicesRoute = DevicesRouteImport.update({
@@ -39,12 +45,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/chat': typeof ChatRoute
   '/devices': typeof DevicesRoute
+  '/files': typeof FilesRoute
   '/memory': typeof MemoryRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/chat': typeof ChatRoute
   '/devices': typeof DevicesRoute
+  '/files': typeof FilesRoute
   '/memory': typeof MemoryRoute
 }
 export interface FileRoutesById {
@@ -52,20 +60,22 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/chat': typeof ChatRoute
   '/devices': typeof DevicesRoute
+  '/files': typeof FilesRoute
   '/memory': typeof MemoryRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/chat' | '/devices' | '/memory'
+  fullPaths: '/' | '/chat' | '/devices' | '/files' | '/memory'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/chat' | '/devices' | '/memory'
-  id: '__root__' | '/' | '/chat' | '/devices' | '/memory'
+  to: '/' | '/chat' | '/devices' | '/files' | '/memory'
+  id: '__root__' | '/' | '/chat' | '/devices' | '/files' | '/memory'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ChatRoute: typeof ChatRoute
   DevicesRoute: typeof DevicesRoute
+  FilesRoute: typeof FilesRoute
   MemoryRoute: typeof MemoryRoute
 }
 
@@ -76,6 +86,13 @@ declare module '@tanstack/react-router' {
       path: '/memory'
       fullPath: '/memory'
       preLoaderRoute: typeof MemoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/files': {
+      id: '/files'
+      path: '/files'
+      fullPath: '/files'
+      preLoaderRoute: typeof FilesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/devices': {
@@ -106,6 +123,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ChatRoute: ChatRoute,
   DevicesRoute: DevicesRoute,
+  FilesRoute: FilesRoute,
   MemoryRoute: MemoryRoute,
 }
 export const routeTree = rootRouteImport
