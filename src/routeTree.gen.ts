@@ -13,6 +13,7 @@ import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as MemoryRouteImport } from './routes/memory'
 import { Route as FilesRouteImport } from './routes/files'
 import { Route as DevicesRouteImport } from './routes/devices'
+import { Route as DeveloperRouteImport } from './routes/developer'
 import { Route as ChatRouteImport } from './routes/chat'
 import { Route as AutomationRouteImport } from './routes/automation'
 import { Route as IndexRouteImport } from './routes/index'
@@ -37,6 +38,11 @@ const DevicesRoute = DevicesRouteImport.update({
   path: '/devices',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DeveloperRoute = DeveloperRouteImport.update({
+  id: '/developer',
+  path: '/developer',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ChatRoute = ChatRouteImport.update({
   id: '/chat',
   path: '/chat',
@@ -57,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/automation': typeof AutomationRoute
   '/chat': typeof ChatRoute
+  '/developer': typeof DeveloperRoute
   '/devices': typeof DevicesRoute
   '/files': typeof FilesRoute
   '/memory': typeof MemoryRoute
@@ -66,6 +73,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/automation': typeof AutomationRoute
   '/chat': typeof ChatRoute
+  '/developer': typeof DeveloperRoute
   '/devices': typeof DevicesRoute
   '/files': typeof FilesRoute
   '/memory': typeof MemoryRoute
@@ -76,6 +84,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/automation': typeof AutomationRoute
   '/chat': typeof ChatRoute
+  '/developer': typeof DeveloperRoute
   '/devices': typeof DevicesRoute
   '/files': typeof FilesRoute
   '/memory': typeof MemoryRoute
@@ -87,6 +96,7 @@ export interface FileRouteTypes {
     | '/'
     | '/automation'
     | '/chat'
+    | '/developer'
     | '/devices'
     | '/files'
     | '/memory'
@@ -96,6 +106,7 @@ export interface FileRouteTypes {
     | '/'
     | '/automation'
     | '/chat'
+    | '/developer'
     | '/devices'
     | '/files'
     | '/memory'
@@ -105,6 +116,7 @@ export interface FileRouteTypes {
     | '/'
     | '/automation'
     | '/chat'
+    | '/developer'
     | '/devices'
     | '/files'
     | '/memory'
@@ -115,6 +127,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AutomationRoute: typeof AutomationRoute
   ChatRoute: typeof ChatRoute
+  DeveloperRoute: typeof DeveloperRoute
   DevicesRoute: typeof DevicesRoute
   FilesRoute: typeof FilesRoute
   MemoryRoute: typeof MemoryRoute
@@ -151,6 +164,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DevicesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/developer': {
+      id: '/developer'
+      path: '/developer'
+      fullPath: '/developer'
+      preLoaderRoute: typeof DeveloperRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/chat': {
       id: '/chat'
       path: '/chat'
@@ -179,6 +199,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AutomationRoute: AutomationRoute,
   ChatRoute: ChatRoute,
+  DeveloperRoute: DeveloperRoute,
   DevicesRoute: DevicesRoute,
   FilesRoute: FilesRoute,
   MemoryRoute: MemoryRoute,
