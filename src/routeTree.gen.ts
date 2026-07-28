@@ -13,6 +13,7 @@ import { Route as MemoryRouteImport } from './routes/memory'
 import { Route as FilesRouteImport } from './routes/files'
 import { Route as DevicesRouteImport } from './routes/devices'
 import { Route as ChatRouteImport } from './routes/chat'
+import { Route as AutomationRouteImport } from './routes/automation'
 import { Route as IndexRouteImport } from './routes/index'
 
 const MemoryRoute = MemoryRouteImport.update({
@@ -35,6 +36,11 @@ const ChatRoute = ChatRouteImport.update({
   path: '/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AutomationRoute = AutomationRouteImport.update({
+  id: '/automation',
+  path: '/automation',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -43,6 +49,7 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/automation': typeof AutomationRoute
   '/chat': typeof ChatRoute
   '/devices': typeof DevicesRoute
   '/files': typeof FilesRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/automation': typeof AutomationRoute
   '/chat': typeof ChatRoute
   '/devices': typeof DevicesRoute
   '/files': typeof FilesRoute
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/automation': typeof AutomationRoute
   '/chat': typeof ChatRoute
   '/devices': typeof DevicesRoute
   '/files': typeof FilesRoute
@@ -65,14 +74,22 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/chat' | '/devices' | '/files' | '/memory'
+  fullPaths: '/' | '/automation' | '/chat' | '/devices' | '/files' | '/memory'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/chat' | '/devices' | '/files' | '/memory'
-  id: '__root__' | '/' | '/chat' | '/devices' | '/files' | '/memory'
+  to: '/' | '/automation' | '/chat' | '/devices' | '/files' | '/memory'
+  id:
+    | '__root__'
+    | '/'
+    | '/automation'
+    | '/chat'
+    | '/devices'
+    | '/files'
+    | '/memory'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AutomationRoute: typeof AutomationRoute
   ChatRoute: typeof ChatRoute
   DevicesRoute: typeof DevicesRoute
   FilesRoute: typeof FilesRoute
@@ -109,6 +126,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/automation': {
+      id: '/automation'
+      path: '/automation'
+      fullPath: '/automation'
+      preLoaderRoute: typeof AutomationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -121,6 +145,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AutomationRoute: AutomationRoute,
   ChatRoute: ChatRoute,
   DevicesRoute: DevicesRoute,
   FilesRoute: FilesRoute,
