@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as MemoryRouteImport } from './routes/memory'
 import { Route as FilesRouteImport } from './routes/files'
 import { Route as DevicesRouteImport } from './routes/devices'
@@ -16,6 +17,11 @@ import { Route as ChatRouteImport } from './routes/chat'
 import { Route as AutomationRouteImport } from './routes/automation'
 import { Route as IndexRouteImport } from './routes/index'
 
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MemoryRoute = MemoryRouteImport.update({
   id: '/memory',
   path: '/memory',
@@ -54,6 +60,7 @@ export interface FileRoutesByFullPath {
   '/devices': typeof DevicesRoute
   '/files': typeof FilesRoute
   '/memory': typeof MemoryRoute
+  '/settings': typeof SettingsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +69,7 @@ export interface FileRoutesByTo {
   '/devices': typeof DevicesRoute
   '/files': typeof FilesRoute
   '/memory': typeof MemoryRoute
+  '/settings': typeof SettingsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,12 +79,27 @@ export interface FileRoutesById {
   '/devices': typeof DevicesRoute
   '/files': typeof FilesRoute
   '/memory': typeof MemoryRoute
+  '/settings': typeof SettingsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/automation' | '/chat' | '/devices' | '/files' | '/memory'
+  fullPaths:
+    | '/'
+    | '/automation'
+    | '/chat'
+    | '/devices'
+    | '/files'
+    | '/memory'
+    | '/settings'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/automation' | '/chat' | '/devices' | '/files' | '/memory'
+  to:
+    | '/'
+    | '/automation'
+    | '/chat'
+    | '/devices'
+    | '/files'
+    | '/memory'
+    | '/settings'
   id:
     | '__root__'
     | '/'
@@ -85,6 +108,7 @@ export interface FileRouteTypes {
     | '/devices'
     | '/files'
     | '/memory'
+    | '/settings'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -94,10 +118,18 @@ export interface RootRouteChildren {
   DevicesRoute: typeof DevicesRoute
   FilesRoute: typeof FilesRoute
   MemoryRoute: typeof MemoryRoute
+  SettingsRoute: typeof SettingsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/memory': {
       id: '/memory'
       path: '/memory'
@@ -150,6 +182,7 @@ const rootRouteChildren: RootRouteChildren = {
   DevicesRoute: DevicesRoute,
   FilesRoute: FilesRoute,
   MemoryRoute: MemoryRoute,
+  SettingsRoute: SettingsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
