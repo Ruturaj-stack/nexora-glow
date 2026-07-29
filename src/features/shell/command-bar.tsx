@@ -1,7 +1,8 @@
-import { Bell, Menu, PanelsTopLeft, Search, Sparkles } from "lucide-react";
+import { Bell, Menu, PanelsTopLeft, Search } from "lucide-react";
 import { useAppStore } from "@/store/app-store";
 import { Button } from "@/components/ui/button";
 import { OrbStatePicker } from "@/features/orb/orb-state-picker";
+import { UserMenu } from "@/features/shell/user-menu";
 
 export function CommandBar() {
   const { setPaletteOpen, setMobileNavOpen, notifications, setNotificationsOpen, toggleSidebar } =
@@ -59,12 +60,8 @@ export function CommandBar() {
           )}
         </Button>
 
-        <div className="ml-1 flex items-center gap-2 rounded-xl border border-border bg-surface/50 py-1 pl-1 pr-3">
-          <span className="grid size-7 place-items-center rounded-lg bg-primary/12 text-primary">
-            <Sparkles className="size-3.5" />
-          </span>
-          <span className="hidden text-xs font-medium sm:inline">Ari</span>
-        </div>
+        <UserMenu />
+
       </div>
     </header>
   );

@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { Outlet, useRouterState } from "@tanstack/react-router";
+import type { ReactNode } from "react";
+import { useRouterState } from "@tanstack/react-router";
 import { Sidebar } from "./sidebar";
 import { CommandBar } from "./command-bar";
 import { StatusBar } from "./status-bar";
@@ -8,9 +9,10 @@ import { NotificationCenter } from "./notification-center";
 import { useAppStore } from "@/store/app-store";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
-export function AppShell() {
+export function AppShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { mobileNavOpen, setMobileNavOpen } = useAppStore();
+
 
   return (
     <TooltipProvider delayDuration={200}>
@@ -54,7 +56,7 @@ export function AppShell() {
                 transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
                 className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8"
               >
-                <Outlet />
+                {children}
               </motion.div>
             </AnimatePresence>
           </main>

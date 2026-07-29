@@ -8,7 +8,7 @@ import { automations } from "@/data/mock";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 
-export const Route = createFileRoute("/automation")({
+export const Route = createFileRoute("/_authenticated/automation")({
   head: () => ({
     meta: [
       { title: "Automation — Nexora AI Workspace" },

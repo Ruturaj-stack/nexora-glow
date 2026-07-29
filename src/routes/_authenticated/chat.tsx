@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useAppStore } from "@/store/app-store";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/chat")({
+export const Route = createFileRoute("/_authenticated/chat")({
   head: () => ({
     meta: [
       { title: "Chat — Nexora AI Workspace" },

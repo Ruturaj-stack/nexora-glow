@@ -10,7 +10,7 @@ import { OrbStatePicker } from "@/features/orb/orb-state-picker";
 import { AIOrb } from "@/features/orb/ai-orb";
 import { useAppStore } from "@/store/app-store";
 
-export const Route = createFileRoute("/settings")({
+export const Route = createFileRoute("/_authenticated/settings")({
   head: () => ({
     meta: [
       { title: "Settings — Nexora AI Workspace" },
