@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/devices")({
+export const Route = createFileRoute("/_authenticated/devices")({
   head: () => ({
     meta: [
       { title: "Devices — Nexora AI Workspace" },

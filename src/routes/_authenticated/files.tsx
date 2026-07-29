@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 
-export const Route = createFileRoute("/files")({
+export const Route = createFileRoute("/_authenticated/files")({
   head: () => ({
     meta: [
       { title: "Files — Nexora AI Workspace" },

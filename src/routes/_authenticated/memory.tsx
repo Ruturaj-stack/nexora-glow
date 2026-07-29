@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 
-export const Route = createFileRoute("/memory")({
+export const Route = createFileRoute("/_authenticated/memory")({
   head: () => ({
     meta: [
       { title: "Memory — Nexora AI Workspace" },

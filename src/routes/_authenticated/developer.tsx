@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/developer")({
+export const Route = createFileRoute("/_authenticated/developer")({
   head: () => ({
     meta: [
       { title: "Developer — Nexora AI Workspace" },
