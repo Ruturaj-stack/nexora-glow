@@ -3,6 +3,7 @@ import { getRequest } from "@tanstack/react-start/server";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { ok, type ApiResponse } from "@/lib/api-response";
 import { updateProfileSchema, updateSettingsSchema } from "@/lib/validators/auth";
+import { describeDevice } from "@/lib/device";
 
 export interface MeProfile {
   id: string;
@@ -134,10 +135,3 @@ export const recordSession = createServerFn({ method: "POST" })
 
     return ok(null, "Session recorded");
   });
-
-function describeDevice(userAgent: string | null): string {
-  if (!userAgent) return "Unknown device";
-  if (/iphone|android|mobile/i.test(userAgent)) return "Mobile browser";
-  if (/ipad|tablet/i.test(userAgent)) return "Tablet browser";
-  return "Desktop browser";
-}
