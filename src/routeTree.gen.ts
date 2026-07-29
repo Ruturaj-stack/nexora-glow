@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as RegisterRouteImport } from './routes/register'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
@@ -23,6 +24,11 @@ import { Route as AuthenticatedAutomationRouteImport } from './routes/_authentic
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -73,6 +79,7 @@ const AuthenticatedAutomationRoute = AuthenticatedAutomationRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
+  '/register': typeof RegisterRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/automation': typeof AuthenticatedAutomationRoute
   '/chat': typeof AuthenticatedChatRoute
@@ -85,6 +92,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
+  '/register': typeof RegisterRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/automation': typeof AuthenticatedAutomationRoute
   '/chat': typeof AuthenticatedChatRoute
@@ -98,6 +106,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/auth': typeof AuthRoute
+  '/register': typeof RegisterRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/automation': typeof AuthenticatedAutomationRoute
   '/_authenticated/chat': typeof AuthenticatedChatRoute
@@ -112,6 +121,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/auth'
+    | '/register'
     | '/sitemap.xml'
     | '/automation'
     | '/chat'
@@ -124,6 +134,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/auth'
+    | '/register'
     | '/sitemap.xml'
     | '/automation'
     | '/chat'
@@ -136,6 +147,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/auth'
+    | '/register'
     | '/sitemap.xml'
     | '/_authenticated/automation'
     | '/_authenticated/chat'
@@ -149,6 +161,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
+  RegisterRoute: typeof RegisterRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   AuthenticatedAutomationRoute: typeof AuthenticatedAutomationRoute
   AuthenticatedChatRoute: typeof AuthenticatedChatRoute
@@ -167,6 +180,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -237,6 +257,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
+  RegisterRoute: RegisterRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   AuthenticatedAutomationRoute: AuthenticatedAutomationRoute,
   AuthenticatedChatRoute: AuthenticatedChatRoute,
