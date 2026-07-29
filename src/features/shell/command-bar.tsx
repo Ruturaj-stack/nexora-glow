@@ -59,12 +59,8 @@ export function CommandBar() {
           )}
         </Button>
 
-        <div className="ml-1 flex items-center gap-2 rounded-xl border border-border bg-surface/50 py-1 pl-1 pr-3">
-          <span className="grid size-7 place-items-center rounded-lg bg-primary/12 text-primary">
-            <Sparkles className="size-3.5" />
-          </span>
-          <span className="hidden text-xs font-medium sm:inline">Ari</span>
-        </div>
+        <UserMenu />
+
       </div>
     </header>
   );
