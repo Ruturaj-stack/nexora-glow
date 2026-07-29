@@ -56,7 +56,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
                 className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8"
               >
-                <Outlet />
+                {children}
               </motion.div>
             </AnimatePresence>
           </main>
