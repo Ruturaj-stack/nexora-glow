@@ -1,7 +1,8 @@
-import { Bell, Menu, PanelsTopLeft, Search, Sparkles } from "lucide-react";
+import { Bell, Menu, PanelsTopLeft, Search } from "lucide-react";
 import { useAppStore } from "@/store/app-store";
 import { Button } from "@/components/ui/button";
 import { OrbStatePicker } from "@/features/orb/orb-state-picker";
+import { UserMenu } from "@/features/shell/user-menu";
 
 export function CommandBar() {
   const { setPaletteOpen, setMobileNavOpen, notifications, setNotificationsOpen, toggleSidebar } =
