@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { voiceManager } from "./voice-manager";
 import { useVoiceStore } from "@/store/voice-store";
 
@@ -46,7 +46,7 @@ export function useVoiceShortcuts() {
 /** Live session duration in seconds, ticking while a session is open. */
 export function useSessionSeconds(): number {
   const startedAt = useVoiceStore((s) => s.sessionStartedAt);
-  const [seconds, setSeconds] = useStateSafe(0);
+  const [seconds, setSeconds] = useState(0);
 
   useEffect(() => {
     if (!startedAt) {
@@ -57,12 +57,15 @@ export function useSessionSeconds(): number {
     tick();
     const id = setInterval(tick, 500);
     return () => clearInterval(id);
-  }, [startedAt, setSeconds]);
+  }, [startedAt]);
 
   return seconds;
 }
 
-import { useState } from "react";
-function useStateSafe(initial: number) {
-  return useState<number>(initial);
+export function formatDuration(seconds: number): string {
+  const m = Math.floor(seconds / 60)
+    .toString()
+    .padStart(2, "0");
+  const s = (seconds % 60).toString().padStart(2, "0");
+  return `${m}:${s}`;
 }
