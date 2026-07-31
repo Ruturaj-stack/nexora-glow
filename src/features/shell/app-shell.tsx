@@ -8,6 +8,7 @@ import { CommandPalette } from "./command-palette";
 import { NotificationCenter } from "./notification-center";
 import { useAppStore } from "@/store/app-store";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { VoiceAssistantPanel } from "@/features/voice/voice-assistant-panel";
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -63,6 +64,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <StatusBar />
         </div>
 
+        <VoiceAssistantPanel />
         <CommandPalette />
         <NotificationCenter />
       </div>
