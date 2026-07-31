@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { PanelRight } from "lucide-react";
@@ -33,6 +33,9 @@ import {
   type Attachment,
   type ConversationRecord,
 } from "@/lib/conversations.functions";
+import { voiceManager } from "@/features/voice/voice-manager";
+import { useVoiceSubmit } from "@/features/voice/use-voice";
+import { useVoiceStore } from "@/store/voice-store";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/chat/$conversationId")({
@@ -328,7 +331,7 @@ function ChatConversation() {
         <Composer
           value={draft}
           onChange={(value) => setDraft(conversationId, value)}
-          onSend={() => void send()}
+          onSend={send}
           onStop={() => abortRef.current?.abort()}
           streaming={isStreaming}
           attachments={attachments}
