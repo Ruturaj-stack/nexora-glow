@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { PanelRight } from "lucide-react";
@@ -33,6 +33,9 @@ import {
   type Attachment,
   type ConversationRecord,
 } from "@/lib/conversations.functions";
+import { voiceManager } from "@/features/voice/voice-manager";
+import { useVoiceSubmit } from "@/features/voice/use-voice";
+import { useVoiceStore } from "@/store/voice-store";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/chat/$conversationId")({
@@ -175,51 +178,69 @@ function ChatConversation() {
     }
   };
 
-  const send = async () => {
-    const text = draft.trim();
-    if (!text && attachments.length === 0) return;
+  const sendMessage = useCallback(
+    async (rawText: string, outgoing: Attachment[]) => {
+      const text = rawText.trim();
+      if (!text && outgoing.length === 0) return;
 
-    const outgoing = attachments;
-    setDraft(conversationId, "");
-    setAttachments([]);
+      setDraft(conversationId, "");
+      setAttachments([]);
 
-    try {
-      await appendUserMessage({
-        data: {
+      let reply = "";
+      try {
+        await appendUserMessage({
+          data: {
+            conversationId,
+            content: text || `Sent ${outgoing.length} attachment(s)`,
+            attachments: outgoing,
+          },
+        });
+        await queryClient.invalidateQueries({ queryKey: ["messages", conversationId] });
+        void refreshConversations();
+
+        const controller = new AbortController();
+        abortRef.current = controller;
+        startStream(conversationId);
+
+        reply = await streamAssistant({
           conversationId,
-          content: text || `Sent ${outgoing.length} attachment(s)`,
-          attachments: outgoing,
-        },
-      });
-      await queryClient.invalidateQueries({ queryKey: ["messages", conversationId] });
-      void refreshConversations();
-
-      const controller = new AbortController();
-      abortRef.current = controller;
-      startStream(conversationId);
-
-      await streamAssistant({
-        conversationId,
-        signal: controller.signal,
-        onDelta: appendDelta,
-      });
-    } catch (error) {
-      if ((error as Error).name !== "AbortError") {
-        toast.error(error instanceof Error ? error.message : "The assistant failed to respond");
+          signal: controller.signal,
+          onDelta: appendDelta,
+        });
+      } catch (error) {
+        if ((error as Error).name !== "AbortError") {
+          toast.error(error instanceof Error ? error.message : "The assistant failed to respond");
+        }
+        voiceManager.stopSpeaking();
+      } finally {
+        endStream();
+        abortRef.current = null;
+        await queryClient.invalidateQueries({ queryKey: ["messages", conversationId] });
+        // Speak the completed reply when auto-speak is enabled.
+        if (reply.trim() && useVoiceStore.getState().settings.autoSpeak) {
+          voiceManager.speak(reply);
+        }
+        void extractMemories({ data: { conversationId } })
+          .then((result) => {
+            if (result.data.length) {
+              void queryClient.invalidateQueries({ queryKey: ["memories"] });
+            }
+          })
+          .catch(() => undefined);
       }
-    } finally {
-      endStream();
-      abortRef.current = null;
-      await queryClient.invalidateQueries({ queryKey: ["messages", conversationId] });
-      void extractMemories({ data: { conversationId } })
-        .then((result) => {
-          if (result.data.length) {
-            void queryClient.invalidateQueries({ queryKey: ["memories"] });
-          }
-        })
-        .catch(() => undefined);
-    }
-  };
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [conversationId],
+  );
+
+  const send = () => void sendMessage(draft, attachments);
+
+  /** Voice transcripts are sent exactly like typed messages. */
+  const handleVoiceTranscript = useCallback(
+    (text: string) => sendMessage(text, []),
+    [sendMessage],
+  );
+  useVoiceSubmit(handleVoiceTranscript);
 
   const exportConversation = (target: ConversationRecord) => {
     const body = messages
@@ -310,7 +331,7 @@ function ChatConversation() {
         <Composer
           value={draft}
           onChange={(value) => setDraft(conversationId, value)}
-          onSend={() => void send()}
+          onSend={send}
           onStop={() => abortRef.current?.abort()}
           streaming={isStreaming}
           attachments={attachments}

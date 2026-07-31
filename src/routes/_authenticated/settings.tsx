@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Bell, Palette, Shield, Sparkles } from "lucide-react";
+import { AudioLines, Bell, Palette, Shield, Sparkles } from "lucide-react";
 import { PageHeader } from "@/components/common/page-header";
 import { GlassPanel } from "@/components/common/glass-panel";
 import { Switch } from "@/components/ui/switch";
@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { OrbStatePicker } from "@/features/orb/orb-state-picker";
 import { AIOrb } from "@/features/orb/ai-orb";
 import { useAppStore } from "@/store/app-store";
+import { VoiceSettings } from "@/features/voice/voice-settings";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   head: () => ({
@@ -109,6 +110,17 @@ function SettingsPage() {
             control={<Switch />}
           />
           <Row label="Compact density" hint="Tighter spacing" control={<Switch />} />
+        </Section>
+
+        <Section
+          icon={AudioLines}
+          title="Voice"
+          description="Speech input, synthesis and devices"
+          delay={0.08}
+        >
+          <div id="voice">
+            <VoiceSettings />
+          </div>
         </Section>
 
         <Section icon={Bell} title="Notifications" description="Alerts and delivery" delay={0.1}>
