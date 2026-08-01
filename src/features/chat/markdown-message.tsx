@@ -7,6 +7,7 @@ import rehypeKatex from "rehype-katex";
 import rehypeHighlight from "rehype-highlight";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { ToolCallCard } from "@/features/tools/tool-call-card";
 
 function MermaidDiagram({ code }: { code: string }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -100,6 +101,7 @@ export function MarkdownMessage({ content, className }: { content: string; class
               );
             }
             if (language === "mermaid") return <MermaidDiagram code={text} />;
+            if (language === "nexora-tool") return <ToolCallCard code={text} />;
             return <CodeBlock language={language} code={text} />;
           },
           blockquote: ({ children }) => (

@@ -17,11 +17,13 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as AuthenticatedToolsRouteImport } from './routes/_authenticated/tools'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedMemoryRouteImport } from './routes/_authenticated/memory'
 import { Route as AuthenticatedFilesRouteImport } from './routes/_authenticated/files'
 import { Route as AuthenticatedDevicesRouteImport } from './routes/_authenticated/devices'
 import { Route as AuthenticatedDeveloperRouteImport } from './routes/_authenticated/developer'
+import { Route as AuthenticatedComputerRouteImport } from './routes/_authenticated/computer'
 import { Route as AuthenticatedAutomationRouteImport } from './routes/_authenticated/automation'
 import { Route as AuthenticatedChatIndexRouteImport } from './routes/_authenticated/chat.index'
 import { Route as AuthenticatedChatConversationIdRouteImport } from './routes/_authenticated/chat.$conversationId'
@@ -65,6 +67,11 @@ const ApiChatRoute = ApiChatRouteImport.update({
   path: '/api/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedToolsRoute = AuthenticatedToolsRouteImport.update({
+  id: '/tools',
+  path: '/tools',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -88,6 +95,11 @@ const AuthenticatedDevicesRoute = AuthenticatedDevicesRouteImport.update({
 const AuthenticatedDeveloperRoute = AuthenticatedDeveloperRouteImport.update({
   id: '/developer',
   path: '/developer',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedComputerRoute = AuthenticatedComputerRouteImport.update({
+  id: '/computer',
+  path: '/computer',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedAutomationRoute = AuthenticatedAutomationRouteImport.update({
@@ -115,11 +127,13 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/automation': typeof AuthenticatedAutomationRoute
+  '/computer': typeof AuthenticatedComputerRoute
   '/developer': typeof AuthenticatedDeveloperRoute
   '/devices': typeof AuthenticatedDevicesRoute
   '/files': typeof AuthenticatedFilesRoute
   '/memory': typeof AuthenticatedMemoryRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/tools': typeof AuthenticatedToolsRoute
   '/api/chat': typeof ApiChatRoute
   '/chat/$conversationId': typeof AuthenticatedChatConversationIdRoute
   '/chat/': typeof AuthenticatedChatIndexRoute
@@ -131,11 +145,13 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/automation': typeof AuthenticatedAutomationRoute
+  '/computer': typeof AuthenticatedComputerRoute
   '/developer': typeof AuthenticatedDeveloperRoute
   '/devices': typeof AuthenticatedDevicesRoute
   '/files': typeof AuthenticatedFilesRoute
   '/memory': typeof AuthenticatedMemoryRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/tools': typeof AuthenticatedToolsRoute
   '/api/chat': typeof ApiChatRoute
   '/': typeof AuthenticatedIndexRoute
   '/chat/$conversationId': typeof AuthenticatedChatConversationIdRoute
@@ -150,11 +166,13 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/automation': typeof AuthenticatedAutomationRoute
+  '/_authenticated/computer': typeof AuthenticatedComputerRoute
   '/_authenticated/developer': typeof AuthenticatedDeveloperRoute
   '/_authenticated/devices': typeof AuthenticatedDevicesRoute
   '/_authenticated/files': typeof AuthenticatedFilesRoute
   '/_authenticated/memory': typeof AuthenticatedMemoryRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/tools': typeof AuthenticatedToolsRoute
   '/api/chat': typeof ApiChatRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/chat/$conversationId': typeof AuthenticatedChatConversationIdRoute
@@ -170,11 +188,13 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sitemap.xml'
     | '/automation'
+    | '/computer'
     | '/developer'
     | '/devices'
     | '/files'
     | '/memory'
     | '/settings'
+    | '/tools'
     | '/api/chat'
     | '/chat/$conversationId'
     | '/chat/'
@@ -186,11 +206,13 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sitemap.xml'
     | '/automation'
+    | '/computer'
     | '/developer'
     | '/devices'
     | '/files'
     | '/memory'
     | '/settings'
+    | '/tools'
     | '/api/chat'
     | '/'
     | '/chat/$conversationId'
@@ -204,11 +226,13 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sitemap.xml'
     | '/_authenticated/automation'
+    | '/_authenticated/computer'
     | '/_authenticated/developer'
     | '/_authenticated/devices'
     | '/_authenticated/files'
     | '/_authenticated/memory'
     | '/_authenticated/settings'
+    | '/_authenticated/tools'
     | '/api/chat'
     | '/_authenticated/'
     | '/_authenticated/chat/$conversationId'
@@ -283,6 +307,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/tools': {
+      id: '/_authenticated/tools'
+      path: '/tools'
+      fullPath: '/tools'
+      preLoaderRoute: typeof AuthenticatedToolsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/settings': {
       id: '/_authenticated/settings'
       path: '/settings'
@@ -318,6 +349,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDeveloperRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/computer': {
+      id: '/_authenticated/computer'
+      path: '/computer'
+      fullPath: '/computer'
+      preLoaderRoute: typeof AuthenticatedComputerRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/automation': {
       id: '/_authenticated/automation'
       path: '/automation'
@@ -344,11 +382,13 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAutomationRoute: typeof AuthenticatedAutomationRoute
+  AuthenticatedComputerRoute: typeof AuthenticatedComputerRoute
   AuthenticatedDeveloperRoute: typeof AuthenticatedDeveloperRoute
   AuthenticatedDevicesRoute: typeof AuthenticatedDevicesRoute
   AuthenticatedFilesRoute: typeof AuthenticatedFilesRoute
   AuthenticatedMemoryRoute: typeof AuthenticatedMemoryRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedToolsRoute: typeof AuthenticatedToolsRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedChatConversationIdRoute: typeof AuthenticatedChatConversationIdRoute
   AuthenticatedChatIndexRoute: typeof AuthenticatedChatIndexRoute
@@ -356,11 +396,13 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAutomationRoute: AuthenticatedAutomationRoute,
+  AuthenticatedComputerRoute: AuthenticatedComputerRoute,
   AuthenticatedDeveloperRoute: AuthenticatedDeveloperRoute,
   AuthenticatedDevicesRoute: AuthenticatedDevicesRoute,
   AuthenticatedFilesRoute: AuthenticatedFilesRoute,
   AuthenticatedMemoryRoute: AuthenticatedMemoryRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedToolsRoute: AuthenticatedToolsRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedChatConversationIdRoute: AuthenticatedChatConversationIdRoute,
   AuthenticatedChatIndexRoute: AuthenticatedChatIndexRoute,

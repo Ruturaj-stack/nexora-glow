@@ -160,6 +160,84 @@ export type Database = {
         }
         Relationships: []
       }
+      tool_executions: {
+        Row: {
+          category: string
+          created_at: string
+          duration_ms: number
+          error: string | null
+          error_code: string | null
+          id: string
+          params: Json
+          permission: string
+          result: Json | null
+          runtime: string
+          source: string
+          status: string
+          tool: string
+          user_id: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          duration_ms?: number
+          error?: string | null
+          error_code?: string | null
+          id?: string
+          params?: Json
+          permission?: string
+          result?: Json | null
+          runtime?: string
+          source?: string
+          status?: string
+          tool: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          duration_ms?: number
+          error?: string | null
+          error_code?: string | null
+          id?: string
+          params?: Json
+          permission?: string
+          result?: Json | null
+          runtime?: string
+          source?: string
+          status?: string
+          tool?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      tool_permissions: {
+        Row: {
+          created_at: string
+          decision: string
+          id: string
+          scope: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          decision?: string
+          id?: string
+          scope: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          decision?: string
+          id?: string
+          scope?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
