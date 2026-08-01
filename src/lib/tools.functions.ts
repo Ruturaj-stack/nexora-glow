@@ -10,6 +10,8 @@ import { ok, type ApiResponse } from "@/lib/api-response";
  *   POST    /api/v1/tools/executions   (audit record)
  */
 
+export type Json = string | number | boolean | null | Json[] | { [key: string]: Json };
+
 export type PermissionDecisionInput = "ask" | "always" | "denied";
 
 export interface ToolPermissionRecord {
@@ -22,9 +24,9 @@ export interface ToolExecutionRecord {
   id: string;
   tool: string;
   category: string;
-  params: Record<string, unknown>;
+  params: Json;
   status: string;
-  result: unknown;
+  result: Json;
   error: string | null;
   errorCode: string | null;
   durationMs: number;
@@ -41,9 +43,9 @@ interface ExecRow {
   id: string;
   tool: string;
   category: string;
-  params: unknown;
+  params: Json;
   status: string;
-  result: unknown;
+  result: Json;
   error: string | null;
   error_code: string | null;
   duration_ms: number;
@@ -58,9 +60,9 @@ function toExecution(row: ExecRow): ToolExecutionRecord {
     id: row.id,
     tool: row.tool,
     category: row.category,
-    params: (row.params ?? {}) as Record<string, unknown>,
+    params: (row.params ?? {}) as Json,
     status: row.status,
-    result: row.result,
+    result: (row.result ?? null) as Json,
     error: row.error,
     errorCode: row.error_code,
     durationMs: row.duration_ms,
@@ -138,9 +140,9 @@ export const logToolExecution = createServerFn({ method: "POST" })
       .object({
         tool: z.string().min(1).max(80),
         category: z.string().min(1).max(40),
-        params: z.record(z.unknown()).default({}),
+        params: z.record(z.string(), z.any()).default({}),
         status: z.enum(["success", "error", "cancelled"]),
-        result: z.unknown().optional(),
+        result: z.any().optional(),
         error: z.string().max(600).optional(),
         errorCode: z.string().max(40).optional(),
         durationMs: z.number().int().min(0).max(3_600_000).default(0),
@@ -158,9 +160,9 @@ export const logToolExecution = createServerFn({ method: "POST" })
         user_id: context.userId,
         tool: data.tool,
         category: data.category,
-        params: data.params,
+        params: data.params as Json,
         status: data.status,
-        result: serialised.length > 20000 ? { truncated: true } : (data.result ?? null),
+        result: (serialised.length > 20000 ? { truncated: true } : (data.result ?? null)) as Json,
         error: data.error ?? null,
         error_code: data.errorCode ?? null,
         duration_ms: data.durationMs,
