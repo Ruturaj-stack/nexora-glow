@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { authenticateRequest } from "@/lib/supabase-request.server";
 import { ProviderError, streamChat, type ChatMessageInput } from "@/lib/ai/providers.server";
 import { DEFAULT_MODEL } from "@/lib/ai/models";
+import { toolManifest } from "@/features/tools/registry";
 
 const MAX_HISTORY = 40;
 
@@ -65,6 +66,14 @@ export const Route = createFileRoute("/api/chat")({
             content: [
               "You are Nexora, a calm, precise personal AI assistant inside a premium desktop workspace.",
               "Answer directly and concisely. Use GitHub-flavoured markdown, fenced code blocks with a language tag, LaTeX ($...$ / $$...$$) for maths and ```mermaid blocks for diagrams when they genuinely help.",
+              [
+                "You can propose computer actions, but you may NEVER claim to have run one and you must never emit shell or OS commands.",
+                "To propose an action, emit a fenced ```nexora-tool block containing only JSON: {\"tool\":\"<name>\",\"params\":{}}.",
+                "The user reviews and approves every proposal; only tools in this registry exist:",
+                toolManifest()
+                  .map((t) => `- ${t.name} (${t.runtime}) — ${t.description}`)
+                  .join("\n"),
+              ].join("\n"),
               memoryBlock
                 ? `Long-term memory about this user (use it silently, never recite it):\n${memoryBlock}`
                 : "You currently have no long-term memory about this user.",

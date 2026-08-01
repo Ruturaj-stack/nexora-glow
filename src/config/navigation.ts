@@ -5,6 +5,8 @@ import {
   MonitorSmartphone,
   FolderOpen,
   Workflow,
+  MonitorCog,
+  Wrench,
   Settings,
   TerminalSquare,
   type LucideIcon,
@@ -23,6 +25,8 @@ export const primaryNav: NavItem[] = [
   { label: "Memory", to: "/memory", icon: Brain, hint: "Long-term knowledge" },
   { label: "Devices", to: "/devices", icon: MonitorSmartphone, hint: "Connected hardware" },
   { label: "Files", to: "/files", icon: FolderOpen, hint: "Indexed documents" },
+  { label: "Computer", to: "/computer", icon: MonitorCog, hint: "System control" },
+  { label: "Tools", to: "/tools", icon: Wrench, hint: "Registry & permissions" },
   { label: "Automation", to: "/automation", icon: Workflow, hint: "Flows & triggers" },
 ];
 

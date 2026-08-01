@@ -9,10 +9,14 @@ import { NotificationCenter } from "./notification-center";
 import { useAppStore } from "@/store/app-store";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { VoiceAssistantPanel } from "@/features/voice/voice-assistant-panel";
+import { ToolPermissionDialog } from "@/features/tools/permission-dialog";
+import { ToolExecutionPanel } from "@/features/tools/execution-panel";
+import { usePermissionSync } from "@/features/tools/use-tools";
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { mobileNavOpen, setMobileNavOpen } = useAppStore();
+  usePermissionSync();
 
 
   return (
@@ -65,6 +69,8 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
 
         <VoiceAssistantPanel />
+        <ToolExecutionPanel />
+        <ToolPermissionDialog />
         <CommandPalette />
         <NotificationCenter />
       </div>
