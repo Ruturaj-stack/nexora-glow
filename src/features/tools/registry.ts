@@ -317,7 +317,7 @@ export const TOOLS: AnyTool[] = [
     scopes: ["system"],
     schema: z.object({ level: z.number().min(0).max(100) }),
   }),
-] as unknown as ToolDefinition<never, unknown>[];
+];
 
 const INDEX = new Map(TOOLS.map((t) => [t.name, t]));
 
