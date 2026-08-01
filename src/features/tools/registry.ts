@@ -19,24 +19,28 @@ import type { ToolDefinition } from "./types";
  * run a command.
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/** A registry entry with its concrete input type erased. */
+export type AnyTool = ToolDefinition<any, unknown>;
+
 const empty = z.object({}).default({});
 
-function bridgeTool<I extends Record<string, unknown>>(
-  def: Omit<ToolDefinition<I, unknown>, "execute" | "runtime"> & { bridgeName?: string },
-): ToolDefinition<I, unknown> {
+function bridgeTool(
+  def: Omit<AnyTool, "execute" | "runtime"> & { bridgeName?: string },
+): AnyTool {
   return {
     ...def,
     runtime: "bridge",
-    execute: (input, ctx) => {
+    execute: (input: Record<string, unknown>, ctx) => {
       ctx.log(`Dispatching to desktop bridge → ${def.bridgeName ?? def.name}`);
-      return bridgeCall(def.bridgeName ?? def.name, input as Record<string, unknown>, ctx.signal);
+      return bridgeCall(def.bridgeName ?? def.name, input, ctx.signal);
     },
   };
 }
 
 const pathSchema = z.object({ path: z.string().trim().min(1).max(512) });
 
-export const TOOLS: ToolDefinition<never, unknown>[] = [
+export const TOOLS: AnyTool[] = [
   // ── Clipboard ──────────────────────────────────────────────────────────
   {
     name: "clipboard.write",
