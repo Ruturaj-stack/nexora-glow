@@ -13,6 +13,7 @@ import {
 import type {
   DeviceEventRecord,
   JsonObject,
+  JsonValue,
   DeviceHistoryRecord,
   DeviceRecord,
   PairingRecord,
@@ -336,7 +337,7 @@ export const callHomeAssistantService = createServerFn({ method: "POST" })
       })
       .parse(input),
   )
-  .handler(async ({ data, context }): Promise<ApiResponse<unknown>> => {
+  .handler(async ({ data, context }): Promise<ApiResponse<JsonValue>> => {
     const { data: device, error } = await context.supabase
       .from("devices")
       .select("id, address, connector, name")
@@ -369,7 +370,7 @@ export const callHomeAssistantService = createServerFn({ method: "POST" })
       data.service,
       body,
     );
-    return ok(result, `${data.domain}.${data.service} called`);
+    return ok((result ?? null) as JsonValue, `${data.domain}.${data.service} called`);
   });
 
 export const probeHomeAssistant = createServerFn({ method: "POST" })
