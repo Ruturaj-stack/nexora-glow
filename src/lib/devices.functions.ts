@@ -103,7 +103,7 @@ export const requestPairing = createServerFn({ method: "POST" })
           capabilities: data.capabilities,
           metadata: data.metadata,
           secret: hasSecrets ? encryptCredentials(data.credentials) : null,
-        },
+        } as never,
       })
       .select("*")
       .single();
@@ -149,7 +149,7 @@ export const approvePairing = createServerFn({ method: "POST" })
         platform: String(payload["platform"] ?? ""),
         address: String(payload["address"] ?? ""),
         capabilities: (payload["capabilities"] ?? []) as string[],
-        metadata: (payload["metadata"] ?? {}) as JsonObject,
+        metadata: (payload["metadata"] ?? {}) as never,
         status: "idle",
       })
       .select(DEVICE_SELECT)
@@ -172,7 +172,7 @@ export const approvePairing = createServerFn({ method: "POST" })
 
     await context.supabase
       .from("device_pairings")
-      .update({ status: "approved", device_id: device.id, payload: { approved: true } })
+      .update({ status: "approved", device_id: device.id, payload: { approved: true } as never })
       .eq("id", pairing.id);
 
     await context.supabase.from("device_events").insert({
@@ -219,7 +219,7 @@ export const updateDevice = createServerFn({ method: "POST" })
       .parse(input),
   )
   .handler(async ({ data, context }): Promise<ApiResponse<DeviceRecord>> => {
-    const patch: Record<string, never> = {} as Record<string, never>;
+    const patch: Record<string, unknown> = {};
     if (data.name !== undefined) patch["name"] = data.name;
     if (data.favorite !== undefined) patch["favorite"] = data.favorite;
     if (data.group !== undefined) patch["device_group"] = data.group || "Ungrouped";
@@ -233,7 +233,7 @@ export const updateDevice = createServerFn({ method: "POST" })
 
     const { data: row, error } = await context.supabase
       .from("devices")
-      .update(patch)
+      .update(patch as never)
       .eq("id", data.id)
       .select(DEVICE_SELECT)
       .single();
@@ -438,7 +438,7 @@ export const recordDeviceEvent = createServerFn({ method: "POST" })
         type: data.type,
         level: data.level,
         message: data.message,
-        payload: data.payload,
+        payload: data.payload as never,
       })
       .select("*")
       .single();
