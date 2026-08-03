@@ -47,6 +47,263 @@ export type Database = {
         }
         Relationships: []
       }
+      device_credentials: {
+        Row: {
+          ciphertext: string
+          created_at: string
+          device_id: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ciphertext: string
+          created_at?: string
+          device_id: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ciphertext?: string
+          created_at?: string
+          device_id?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "device_credentials_device_id_fkey"
+            columns: ["device_id"]
+            isOneToOne: true
+            referencedRelation: "devices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      device_events: {
+        Row: {
+          created_at: string
+          device_id: string | null
+          device_name: string
+          id: string
+          level: string
+          message: string
+          payload: Json
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          device_id?: string | null
+          device_name?: string
+          id?: string
+          level?: string
+          message?: string
+          payload?: Json
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          device_id?: string | null
+          device_name?: string
+          id?: string
+          level?: string
+          message?: string
+          payload?: Json
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "device_events_device_id_fkey"
+            columns: ["device_id"]
+            isOneToOne: false
+            referencedRelation: "devices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      device_history: {
+        Row: {
+          action: string
+          created_at: string
+          detail: string
+          device_id: string | null
+          device_name: string
+          duration_ms: number
+          id: string
+          source: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          detail?: string
+          device_id?: string | null
+          device_name?: string
+          duration_ms?: number
+          id?: string
+          source?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          detail?: string
+          device_id?: string | null
+          device_name?: string
+          duration_ms?: number
+          id?: string
+          source?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "device_history_device_id_fkey"
+            columns: ["device_id"]
+            isOneToOne: false
+            referencedRelation: "devices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      device_pairings: {
+        Row: {
+          code: string
+          connector: string
+          created_at: string
+          device_id: string | null
+          expires_at: string
+          id: string
+          method: string
+          name: string
+          payload: Json
+          status: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          code: string
+          connector?: string
+          created_at?: string
+          device_id?: string | null
+          expires_at?: string
+          id?: string
+          method?: string
+          name?: string
+          payload?: Json
+          status?: string
+          type?: string
+          user_id: string
+        }
+        Update: {
+          code?: string
+          connector?: string
+          created_at?: string
+          device_id?: string | null
+          expires_at?: string
+          id?: string
+          method?: string
+          name?: string
+          payload?: Json
+          status?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "device_pairings_device_id_fkey"
+            columns: ["device_id"]
+            isOneToOne: false
+            referencedRelation: "devices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      devices: {
+        Row: {
+          address: string
+          battery: number | null
+          capabilities: string[]
+          charging: boolean
+          connection: string
+          connector: string
+          created_at: string
+          device_group: string
+          favorite: boolean
+          firmware: string
+          id: string
+          last_seen_at: string | null
+          metadata: Json
+          name: string
+          paired_at: string
+          platform: string
+          revoked: boolean
+          signal: number | null
+          state: Json
+          status: string
+          type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address?: string
+          battery?: number | null
+          capabilities?: string[]
+          charging?: boolean
+          connection?: string
+          connector?: string
+          created_at?: string
+          device_group?: string
+          favorite?: boolean
+          firmware?: string
+          id?: string
+          last_seen_at?: string | null
+          metadata?: Json
+          name: string
+          paired_at?: string
+          platform?: string
+          revoked?: boolean
+          signal?: number | null
+          state?: Json
+          status?: string
+          type?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address?: string
+          battery?: number | null
+          capabilities?: string[]
+          charging?: boolean
+          connection?: string
+          connector?: string
+          created_at?: string
+          device_group?: string
+          favorite?: boolean
+          firmware?: string
+          id?: string
+          last_seen_at?: string | null
+          metadata?: Json
+          name?: string
+          paired_at?: string
+          platform?: string
+          revoked?: boolean
+          signal?: number | null
+          state?: Json
+          status?: string
+          type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       memories: {
         Row: {
           category: string
