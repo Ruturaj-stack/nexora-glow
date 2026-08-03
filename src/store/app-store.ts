@@ -30,6 +30,7 @@ interface AppState {
   setOrbState: (s: OrbState) => void;
 
   notifications: NexoraNotification[];
+  pushNotification: (notification: NexoraNotification) => void;
   markAllRead: () => void;
   dismiss: (id: string) => void;
 }
@@ -80,6 +81,8 @@ export const useAppStore = create<AppState>((set) => ({
   setOrbState: (s) => set({ orbState: s }),
 
   notifications: seedNotifications,
+  pushNotification: (notification) =>
+    set((s) => ({ notifications: [notification, ...s.notifications].slice(0, 50) })),
   markAllRead: () =>
     set((s) => ({ notifications: s.notifications.map((n) => ({ ...n, read: true })) })),
   dismiss: (id) => set((s) => ({ notifications: s.notifications.filter((n) => n.id !== id) })),
