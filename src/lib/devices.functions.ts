@@ -12,6 +12,7 @@ import {
 } from "@/lib/devices/mapping";
 import type {
   DeviceEventRecord,
+  JsonObject,
   DeviceHistoryRecord,
   DeviceRecord,
   PairingRecord,
@@ -131,7 +132,7 @@ export const approvePairing = createServerFn({ method: "POST" })
       throw new Error("The pairing code expired — start again");
     }
 
-    const payload = (pairing.payload ?? {}) as Record<string, unknown>;
+    const payload = (pairing.payload ?? {}) as JsonObject;
     const { data: device, error } = await context.supabase
       .from("devices")
       .insert({
@@ -148,7 +149,7 @@ export const approvePairing = createServerFn({ method: "POST" })
         platform: String(payload["platform"] ?? ""),
         address: String(payload["address"] ?? ""),
         capabilities: (payload["capabilities"] ?? []) as string[],
-        metadata: (payload["metadata"] ?? {}) as Record<string, unknown>,
+        metadata: (payload["metadata"] ?? {}) as JsonObject,
         status: "idle",
       })
       .select(DEVICE_SELECT)
@@ -218,7 +219,7 @@ export const updateDevice = createServerFn({ method: "POST" })
       .parse(input),
   )
   .handler(async ({ data, context }): Promise<ApiResponse<DeviceRecord>> => {
-    const patch: Record<string, unknown> = {};
+    const patch: Record<string, never> = {} as Record<string, never>;
     if (data.name !== undefined) patch["name"] = data.name;
     if (data.favorite !== undefined) patch["favorite"] = data.favorite;
     if (data.group !== undefined) patch["device_group"] = data.group || "Ungrouped";
@@ -276,7 +277,7 @@ export const getMqttConnection = createServerFn({ method: "POST" })
       const { decryptCredentials } = await import("@/lib/devices/credentials.server");
       secrets = decryptCredentials(cred.ciphertext);
     }
-    const metadata = (device.metadata ?? {}) as Record<string, unknown>;
+    const metadata = (device.metadata ?? {}) as JsonObject;
     return ok({
       url: device.address,
       username: (secrets["username"] as string) ?? null,

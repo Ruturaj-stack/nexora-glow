@@ -1,4 +1,4 @@
-import { DeviceError } from "@/features/devices/types";
+import { DeviceError, type JsonObject } from "@/features/devices/types";
 
 /**
  * Thin Home Assistant REST client. Runs server-side only so the long-lived
@@ -10,14 +10,14 @@ export interface HaEntity {
   domain: string;
   name: string;
   state: string;
-  attributes: Record<string, unknown>;
+  attributes: JsonObject;
   lastChanged: string;
 }
 
 interface HaRawState {
   entity_id: string;
   state: string;
-  attributes?: Record<string, unknown>;
+  attributes?: JsonObject;
   last_changed?: string;
 }
 
@@ -75,7 +75,7 @@ export async function haCallService(
   token: string,
   domain: string,
   service: string,
-  payload: Record<string, unknown>,
+  payload: JsonObject,
 ): Promise<unknown> {
   const response = await haFetch(baseUrl, token, `/api/services/${domain}/${service}`, {
     method: "POST",

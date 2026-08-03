@@ -85,6 +85,10 @@ export type PairingMethod = (typeof PAIRING_METHODS)[number];
 
 export const FUTURE_PAIRING_METHODS: PairingMethod[] = ["bluetooth", "nfc", "relay"];
 
+/** JSON-safe value, matching what the database can round-trip. */
+export type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
+export type JsonObject = { [key: string]: JsonValue };
+
 export type DeviceStatus = "online" | "idle" | "offline" | "error" | "pairing";
 
 export type DeviceEventLevel = "info" | "success" | "warning" | "error";
@@ -103,8 +107,8 @@ export interface DeviceRecord {
   firmware: string;
   address: string;
   capabilities: Capability[];
-  state: Record<string, unknown>;
-  metadata: Record<string, unknown>;
+  state: JsonObject;
+  metadata: JsonObject;
   favorite: boolean;
   group: string;
   revoked: boolean;
@@ -119,7 +123,7 @@ export interface DeviceEventRecord {
   type: string;
   level: DeviceEventLevel;
   message: string;
-  payload: Record<string, unknown>;
+  payload: JsonObject;
   createdAt: string;
 }
 
@@ -143,7 +147,7 @@ export interface PairingRecord {
   type: DeviceType;
   connector: string;
   status: "pending" | "approved" | "rejected" | "expired";
-  payload: Record<string, unknown>;
+  payload: JsonObject;
   expiresAt: string;
   createdAt: string;
 }
@@ -196,7 +200,7 @@ export interface DeviceStatusReport {
   charging?: boolean;
   signal?: number | null;
   firmware?: string;
-  state?: Record<string, unknown>;
+  state?: JsonObject;
 }
 
 export interface DeviceConnector {
@@ -227,5 +231,5 @@ export interface ConnectorEvent {
   type: string;
   level: DeviceEventLevel;
   message: string;
-  payload?: Record<string, unknown>;
+  payload?: JsonObject;
 }

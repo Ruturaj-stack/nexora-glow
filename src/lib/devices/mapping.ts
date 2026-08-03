@@ -6,6 +6,7 @@ import type {
   DeviceRecord,
   DeviceStatus,
   DeviceType,
+  JsonObject,
   PairingMethod,
   PairingRecord,
 } from "@/features/devices/types";
@@ -31,8 +32,8 @@ export function toDevice(row: any): DeviceRecord {
     firmware: row.firmware ?? "",
     address: row.address ?? "",
     capabilities: (row.capabilities ?? []) as Capability[],
-    state: (row.state ?? {}) as Record<string, unknown>,
-    metadata: (row.metadata ?? {}) as Record<string, unknown>,
+    state: (row.state ?? {}) as JsonObject,
+    metadata: (row.metadata ?? {}) as JsonObject,
     favorite: Boolean(row.favorite),
     group: row.device_group ?? "Ungrouped",
     revoked: Boolean(row.revoked),
@@ -49,7 +50,7 @@ export function toEvent(row: any): DeviceEventRecord {
     type: row.type,
     level: row.level,
     message: row.message ?? "",
-    payload: (row.payload ?? {}) as Record<string, unknown>,
+    payload: (row.payload ?? {}) as JsonObject,
     createdAt: row.created_at,
   };
 }
@@ -77,7 +78,7 @@ export function toPairing(row: any): PairingRecord {
     type: row.type as DeviceType,
     connector: row.connector,
     status: row.status,
-    payload: (row.payload ?? {}) as Record<string, unknown>,
+    payload: (row.payload ?? {}) as JsonObject,
     expiresAt: row.expires_at,
     createdAt: row.created_at,
   };
