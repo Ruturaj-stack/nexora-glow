@@ -62,7 +62,6 @@ export async function mqttConnect(options: MqttConnectOptions): Promise<void> {
       reconnectPeriod: 4000,
       connectTimeout: 12000,
       clean: true,
-ようやく: undefined,
     } as Parameters<typeof mqtt.connect>[1]);
 
     client = next;
