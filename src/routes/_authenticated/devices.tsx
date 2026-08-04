@@ -128,15 +128,23 @@ function DevicesPage() {
       <PageHeader
         title="Devices"
         description="Pair, monitor and control external hardware through the connector framework."
-        icon={MonitorSmartphone}
       />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Paired devices" value={String(merged.length)} />
-        <StatCard label="Online now" value={String(online)} />
-        <StatCard label="Recent events" value={String(events.data?.data.length ?? 0)} />
-        <StatCard label="Commands logged" value={String(history.data?.data.length ?? 0)} />
+        <StatCard icon={MonitorSmartphone} label="Paired devices" value={String(merged.length)} />
+        <StatCard icon={Wifi} label="Online now" value={String(online)} />
+        <StatCard
+          icon={Activity}
+          label="Recent events"
+          value={String(events.data?.data.length ?? 0)}
+        />
+        <StatCard
+          icon={Terminal}
+          label="Commands logged"
+          value={String(history.data?.data.length ?? 0)}
+        />
       </div>
+
 
       <Tabs defaultValue="fleet" className="space-y-4">
         <TabsList>
