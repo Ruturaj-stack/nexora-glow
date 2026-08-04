@@ -44,7 +44,8 @@ export type ToolCategory =
   | "volume"
   | "brightness"
   | "browser"
-  | "notifications";
+  | "notifications"
+  | "devices";
 
 export type ToolErrorCode =
   | "INVALID_INPUT"
