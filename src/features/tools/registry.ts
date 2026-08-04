@@ -317,7 +317,93 @@ export const TOOLS: AnyTool[] = [
     scopes: ["system"],
     schema: z.object({ level: z.number().min(0).max(100) }),
   }),
+  // ── Devices ────────────────────────────────────────────────────────────
+  {
+    name: "devices.action",
+    title: "Run device action",
+    description:
+      "Runs a capability action on a paired device (lights, plugs, ESP32 GPIO, phone, hub).",
+    category: "devices",
+    scopes: ["devices"],
+    runtime: "browser",
+    danger: true,
+    timeoutMs: 30000,
+    schema: z.object({
+      deviceId: z.string().uuid(),
+      actionId: z.string().min(1).max(60),
+      input: z.record(z.string(), z.any()).default({}),
+    }),
+    execute: async ({ deviceId, actionId, input }, ctx) => {
+      const { dispatchDeviceAction } = await import("@/features/devices/device-manager");
+      ctx.log(`Dispatching ${actionId} to device ${deviceId}`);
+      const outcome = await dispatchDeviceAction(deviceId, actionId, input, "tools", ctx.signal);
+      outcome.logs.forEach(ctx.log);
+      return outcome.result;
+    },
+  },
+  {
+    name: "devices.status",
+    title: "Read device status",
+    description: "Probes a paired device for battery, signal, firmware and sensor state.",
+    category: "devices",
+    scopes: ["devices"],
+    runtime: "browser",
+    timeoutMs: 20000,
+    schema: z.object({ deviceId: z.string().uuid() }),
+    execute: async ({ deviceId }, ctx) => {
+      const { probeDevice } = await import("@/features/devices/device-manager");
+      ctx.log("Probing device…");
+      return probeDevice(deviceId);
+    },
+  },
+  {
+    name: "mqtt.publish",
+    title: "Publish MQTT message",
+    description: "Publishes a payload to a topic on the connected MQTT broker.",
+    category: "devices",
+    scopes: ["devices", "network"],
+    runtime: "browser",
+    danger: true,
+    schema: z.object({
+      deviceId: z.string().uuid(),
+      topic: z.string().min(1).max(200),
+      payload: z.string().max(4000).default(""),
+      qos: z.union([z.literal(0), z.literal(1), z.literal(2)]).default(0),
+      retain: z.boolean().default(false),
+    }),
+    execute: async ({ deviceId, topic, payload, qos, retain }, ctx) => {
+      const { ensureBrokerConnection } = await import("@/features/devices/connectors/mqtt");
+      const { mqttPublish } = await import("@/features/devices/mqtt-manager");
+      await ensureBrokerConnection(deviceId);
+      ctx.log(`Publishing to ${topic}`);
+      return mqttPublish(topic, payload, { qos, retain });
+    },
+  },
+  {
+    name: "homeassistant.service",
+    title: "Call Home Assistant service",
+    description: "Calls a service on a paired Home Assistant hub, e.g. light.turn_on.",
+    category: "devices",
+    scopes: ["devices", "network"],
+    runtime: "browser",
+    danger: true,
+    timeoutMs: 30000,
+    schema: z.object({
+      deviceId: z.string().uuid(),
+      domain: z.string().regex(/^[a-z_]{1,40}$/),
+      service: z.string().regex(/^[a-z_]{1,60}$/),
+      entityId: z.string().max(120).optional(),
+      payload: z.record(z.string(), z.any()).default({}),
+    }),
+    execute: async (input, ctx) => {
+      const { callHomeAssistantService } = await import("@/lib/devices.functions");
+      ctx.log(`${input.domain}.${input.service}`);
+      const response = await callHomeAssistantService({ data: input });
+      return response.data;
+    },
+  },
 ];
+
 
 const INDEX = new Map(TOOLS.map((t) => [t.name, t]));
 
