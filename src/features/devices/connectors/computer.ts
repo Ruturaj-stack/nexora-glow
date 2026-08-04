@@ -57,9 +57,9 @@ export const computerConnector: DeviceConnector = {
   probe: async () => {
     const bridge = await probeBridge();
     return {
-      status: bridge.available ? "online" : "offline",
+      status: bridge.connected ? "online" : "offline",
       firmware: bridge.version ?? "",
-      state: { bridge: bridge.available ? "connected" : "unavailable" },
+      state: { bridge: bridge.connected ? "connected" : "unavailable", platform: bridge.platform ?? "" },
     };
   },
 };
