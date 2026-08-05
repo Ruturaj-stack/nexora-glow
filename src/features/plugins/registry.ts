@@ -47,7 +47,7 @@ export const PLUGIN_CATALOGUE: PluginManifest[] = [
     author: "Nexora",
     category: "productivity",
     source: "official",
-    permissions: ["notifications", "brightness", "system"],
+    permissions: ["notifications", "desktop", "system"],
     allowedHosts: [],
     uses: ["notification.show", "brightness.set"],
     settings: [
@@ -58,7 +58,7 @@ export const PLUGIN_CATALOGUE: PluginManifest[] = [
         name: "start",
         title: "Start focus session",
         description: "Dims the screen and announces the start of a focus block.",
-        scopes: ["notifications", "brightness"],
+        scopes: ["notifications", "desktop"],
         inputs: [{ name: "minutes", label: "Minutes", type: "number", placeholder: "45" }],
         action: {
           kind: "chain",
