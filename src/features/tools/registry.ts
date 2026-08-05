@@ -407,17 +407,37 @@ export const TOOLS: AnyTool[] = [
 
 const INDEX = new Map(TOOLS.map((t) => [t.name, t]));
 
+/**
+ * Tools contributed at runtime by installed plugins. They are kept in a
+ * separate map so a plugin can never shadow or replace a core tool, and so
+ * uninstalling a plugin removes its capabilities immediately.
+ */
+const DYNAMIC = new Map<string, AnyTool>();
+
+export function registerDynamicTool(tool: AnyTool) {
+  if (INDEX.has(tool.name)) {
+    throw new Error(`"${tool.name}" is a core tool and cannot be overridden.`);
+  }
+  DYNAMIC.set(tool.name, tool);
+}
+
+export function unregisterDynamicTools(predicate: (tool: AnyTool) => boolean) {
+  for (const [name, tool] of DYNAMIC) {
+    if (predicate(tool)) DYNAMIC.delete(name);
+  }
+}
+
 export function getTool(name: string) {
-  return INDEX.get(name);
+  return INDEX.get(name) ?? DYNAMIC.get(name);
 }
 
 export function listTools() {
-  return TOOLS;
+  return [...TOOLS, ...DYNAMIC.values()];
 }
 
 /** Compact manifest handed to the AI so it can only reference real tools. */
 export function toolManifest() {
-  return TOOLS.map((t) => ({
+  return listTools().map((t) => ({
     name: t.name,
     title: t.title,
     description: t.description,
@@ -427,3 +447,4 @@ export function toolManifest() {
     danger: Boolean(t.danger),
   }));
 }
+
