@@ -49,7 +49,7 @@ export const PLUGIN_CATALOGUE: PluginManifest[] = [
     source: "official",
     permissions: ["notifications", "desktop", "system"],
     allowedHosts: [],
-    uses: ["notification.show", "brightness.set"],
+    uses: ["notifications.show", "brightness.set"],
     settings: [
       { name: "brightness", label: "Focus brightness (%)", type: "number", defaultValue: 45 },
     ],
@@ -65,7 +65,7 @@ export const PLUGIN_CATALOGUE: PluginManifest[] = [
           steps: [
             { tool: "brightness.set", params: { level: "{{setting.brightness}}" } },
             {
-              tool: "notification.show",
+              tool: "notifications.show",
               params: {
                 title: "Focus mode on",
                 body: "Deep work for {{input.minutes}} minutes. Notifications are muted.",
@@ -86,7 +86,7 @@ export const PLUGIN_CATALOGUE: PluginManifest[] = [
     source: "official",
     permissions: ["clipboard", "notifications"],
     allowedHosts: [],
-    uses: ["clipboard.write", "notification.show"],
+    uses: ["clipboard.write", "notifications.show"],
     settings: [],
     tools: [
       {
@@ -99,7 +99,7 @@ export const PLUGIN_CATALOGUE: PluginManifest[] = [
           kind: "chain",
           steps: [
             { tool: "clipboard.write", params: { text: "{{input.text}}" } },
-            { tool: "notification.show", params: { title: "Note captured", body: "{{input.text}}" } },
+            { tool: "notifications.show", params: { title: "Note captured", body: "{{input.text}}" } },
           ],
         },
       },
@@ -144,7 +144,7 @@ export const PLUGIN_CATALOGUE: PluginManifest[] = [
     source: "official",
     permissions: ["devices", "notifications"],
     allowedHosts: [],
-    uses: ["homeassistant.service", "notification.show"],
+    uses: ["homeassistant.service", "notifications.show"],
     settings: [{ name: "deviceId", label: "Home Assistant device id", type: "string" }],
     tools: [
       {
@@ -165,7 +165,7 @@ export const PLUGIN_CATALOGUE: PluginManifest[] = [
                 entityId: "{{input.entityId}}",
               },
             },
-            { tool: "notification.show", params: { title: "Scene activated", body: "{{input.entityId}}" } },
+            { tool: "notifications.show", params: { title: "Scene activated", body: "{{input.entityId}}" } },
           ],
         },
       },
