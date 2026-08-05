@@ -203,6 +203,8 @@ export interface WorkflowTrigger {
 
 /* ------------------------------------------------------------------ workflows */
 
+export type Json = string | number | boolean | null | Json[] | { [key: string]: Json };
+
 export type WorkflowStatus = "idle" | "running" | "success" | "error" | "cancelled";
 
 export interface Workflow {
@@ -212,7 +214,7 @@ export interface Workflow {
   category: string;
   enabled: boolean;
   graph: WorkflowGraph;
-  variables: Record<string, unknown>;
+  variables: Record<string, Json>;
   templateId: string;
   runs: number;
   failures: number;
@@ -234,7 +236,7 @@ export interface StepResult {
   status: StepStatus;
   attempts: number;
   durationMs: number;
-  output?: unknown;
+  output?: Json;
   error?: string;
   startedAt: string;
 }
@@ -247,7 +249,7 @@ export interface WorkflowExecution {
   trigger: string;
   steps: StepResult[];
   logs: string[];
-  variables: Record<string, unknown>;
+  variables: Record<string, Json>;
   error: string | null;
   durationMs: number;
   startedAt: string;
