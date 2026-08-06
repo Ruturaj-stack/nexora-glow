@@ -35,18 +35,20 @@ export interface PluginSettingField {
   defaultValue?: string | number | boolean;
 }
 
+export type PluginJson = string | number | boolean | null | PluginJson[] | { [key: string]: PluginJson };
+
 export interface PluginHttpAction {
   kind: "http";
   method: "GET" | "POST";
   /** May contain {{input.x}} and {{setting.y}} placeholders. */
   url: string;
   headers?: Record<string, string>;
-  body?: Record<string, unknown>;
+  body?: Record<string, PluginJson>;
 }
 
 export interface PluginChainAction {
   kind: "chain";
-  steps: { tool: string; params: Record<string, unknown> }[];
+  steps: { tool: string; params: Record<string, PluginJson> }[];
 }
 
 export type PluginActionSpec = PluginHttpAction | PluginChainAction;
