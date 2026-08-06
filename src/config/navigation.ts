@@ -5,6 +5,7 @@ import {
   MonitorSmartphone,
   FolderOpen,
   Workflow,
+  Blocks,
   MonitorCog,
   Wrench,
   Settings,
@@ -28,6 +29,7 @@ export const primaryNav: NavItem[] = [
   { label: "Computer", to: "/computer", icon: MonitorCog, hint: "System control" },
   { label: "Tools", to: "/tools", icon: Wrench, hint: "Registry & permissions" },
   { label: "Automation", to: "/automation", icon: Workflow, hint: "Flows & triggers" },
+  { label: "Plugins", to: "/plugins", icon: Blocks, hint: "Extensions & store" },
 ];
 
 export const secondaryNav: NavItem[] = [
