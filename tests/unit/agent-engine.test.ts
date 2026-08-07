@@ -28,7 +28,7 @@ describe("condition engine", () => {
   });
 
   it("compares variables numerically", () => {
-    const spec = { type: "variable", operator: "gt", value: "10", key: "count" } as never;
+    const spec = { type: "variable", operator: "gt", value: "10", target: "count" } as never;
     expect(evaluateCondition(spec, { count: 20 }).passed).toBe(true);
     expect(evaluateCondition(spec, { count: 5 }).passed).toBe(false);
   });
