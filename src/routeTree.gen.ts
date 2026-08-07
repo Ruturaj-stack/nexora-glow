@@ -27,6 +27,9 @@ import { Route as AuthenticatedDeveloperRouteImport } from './routes/_authentica
 import { Route as AuthenticatedComputerRouteImport } from './routes/_authenticated/computer'
 import { Route as AuthenticatedAutomationRouteImport } from './routes/_authenticated/automation'
 import { Route as AuthenticatedChatIndexRouteImport } from './routes/_authenticated/chat.index'
+import { Route as ApiPublicReadyRouteImport } from './routes/api/public/ready'
+import { Route as ApiPublicMetricsRouteImport } from './routes/api/public/metrics'
+import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
 import { Route as AuthenticatedChatConversationIdRouteImport } from './routes/_authenticated/chat.$conversationId'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -118,6 +121,21 @@ const AuthenticatedChatIndexRoute = AuthenticatedChatIndexRouteImport.update({
   path: '/chat/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiPublicReadyRoute = ApiPublicReadyRouteImport.update({
+  id: '/api/public/ready',
+  path: '/api/public/ready',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicMetricsRoute = ApiPublicMetricsRouteImport.update({
+  id: '/api/public/metrics',
+  path: '/api/public/metrics',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicHealthRoute = ApiPublicHealthRouteImport.update({
+  id: '/api/public/health',
+  path: '/api/public/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedChatConversationIdRoute =
   AuthenticatedChatConversationIdRouteImport.update({
     id: '/chat/$conversationId',
@@ -143,6 +161,9 @@ export interface FileRoutesByFullPath {
   '/tools': typeof AuthenticatedToolsRoute
   '/api/chat': typeof ApiChatRoute
   '/chat/$conversationId': typeof AuthenticatedChatConversationIdRoute
+  '/api/public/health': typeof ApiPublicHealthRoute
+  '/api/public/metrics': typeof ApiPublicMetricsRoute
+  '/api/public/ready': typeof ApiPublicReadyRoute
   '/chat/': typeof AuthenticatedChatIndexRoute
 }
 export interface FileRoutesByTo {
@@ -163,6 +184,9 @@ export interface FileRoutesByTo {
   '/api/chat': typeof ApiChatRoute
   '/': typeof AuthenticatedIndexRoute
   '/chat/$conversationId': typeof AuthenticatedChatConversationIdRoute
+  '/api/public/health': typeof ApiPublicHealthRoute
+  '/api/public/metrics': typeof ApiPublicMetricsRoute
+  '/api/public/ready': typeof ApiPublicReadyRoute
   '/chat': typeof AuthenticatedChatIndexRoute
 }
 export interface FileRoutesById {
@@ -185,6 +209,9 @@ export interface FileRoutesById {
   '/api/chat': typeof ApiChatRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/chat/$conversationId': typeof AuthenticatedChatConversationIdRoute
+  '/api/public/health': typeof ApiPublicHealthRoute
+  '/api/public/metrics': typeof ApiPublicMetricsRoute
+  '/api/public/ready': typeof ApiPublicReadyRoute
   '/_authenticated/chat/': typeof AuthenticatedChatIndexRoute
 }
 export interface FileRouteTypes {
@@ -207,6 +234,9 @@ export interface FileRouteTypes {
     | '/tools'
     | '/api/chat'
     | '/chat/$conversationId'
+    | '/api/public/health'
+    | '/api/public/metrics'
+    | '/api/public/ready'
     | '/chat/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -227,6 +257,9 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/'
     | '/chat/$conversationId'
+    | '/api/public/health'
+    | '/api/public/metrics'
+    | '/api/public/ready'
     | '/chat'
   id:
     | '__root__'
@@ -248,6 +281,9 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/_authenticated/'
     | '/_authenticated/chat/$conversationId'
+    | '/api/public/health'
+    | '/api/public/metrics'
+    | '/api/public/ready'
     | '/_authenticated/chat/'
   fileRoutesById: FileRoutesById
 }
@@ -259,6 +295,9 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ApiChatRoute: typeof ApiChatRoute
+  ApiPublicHealthRoute: typeof ApiPublicHealthRoute
+  ApiPublicMetricsRoute: typeof ApiPublicMetricsRoute
+  ApiPublicReadyRoute: typeof ApiPublicReadyRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -389,6 +428,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedChatIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/ready': {
+      id: '/api/public/ready'
+      path: '/api/public/ready'
+      fullPath: '/api/public/ready'
+      preLoaderRoute: typeof ApiPublicReadyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/metrics': {
+      id: '/api/public/metrics'
+      path: '/api/public/metrics'
+      fullPath: '/api/public/metrics'
+      preLoaderRoute: typeof ApiPublicMetricsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/health': {
+      id: '/api/public/health'
+      path: '/api/public/health'
+      fullPath: '/api/public/health'
+      preLoaderRoute: typeof ApiPublicHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/chat/$conversationId': {
       id: '/_authenticated/chat/$conversationId'
       path: '/chat/$conversationId'
@@ -440,6 +500,9 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ApiChatRoute: ApiChatRoute,
+  ApiPublicHealthRoute: ApiPublicHealthRoute,
+  ApiPublicMetricsRoute: ApiPublicMetricsRoute,
+  ApiPublicReadyRoute: ApiPublicReadyRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
