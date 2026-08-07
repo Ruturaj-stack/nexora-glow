@@ -1,12 +1,24 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { motion } from "framer-motion";
-import { Braces, KeyRound, TerminalSquare } from "lucide-react";
+import { lazy, Suspense } from "react";
+import { Braces, DatabaseBackup, Gauge, ShieldCheck, TerminalSquare } from "lucide-react";
 import { PageHeader } from "@/components/common/page-header";
 import { GlassPanel } from "@/components/common/glass-panel";
-import { logs } from "@/data/mock";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { ErrorBoundary } from "@/components/common/error-boundary";
+import { PanelSkeleton } from "@/components/common/skeletons";
+import { LogViewer } from "@/features/observability/log-viewer";
+import { releaseLabel } from "@/config/version";
+
+// Heavy, rarely-opened panels are code-split out of the initial route chunk.
+const MetricsPanel = lazy(() =>
+  import("@/features/observability/metrics-panel").then((m) => ({ default: m.MetricsPanel })),
+);
+const BackupPanel = lazy(() =>
+  import("@/features/backup/backup-panel").then((m) => ({ default: m.BackupPanel })),
+);
+const TelemetryConsent = lazy(() =>
+  import("@/features/telemetry/telemetry-consent").then((m) => ({ default: m.TelemetryConsent })),
+);
 
 export const Route = createFileRoute("/_authenticated/developer")({
   head: () => ({
@@ -14,24 +26,19 @@ export const Route = createFileRoute("/_authenticated/developer")({
       { title: "Developer — Nexora AI Workspace" },
       {
         name: "description",
-        content: "Runtime logs, API keys and design-token inspection for Nexora builders.",
+        content:
+          "Runtime logs, metrics, backups, telemetry consent and design tokens for Nexora builders.",
       },
       { property: "og:title", content: "Developer — Nexora AI Workspace" },
       {
         property: "og:description",
-        content: "Runtime logs, API keys and design-token inspection for Nexora builders.",
+        content:
+          "Runtime logs, metrics, backups, telemetry consent and design tokens for Nexora builders.",
       },
     ],
   }),
   component: DeveloperPage,
 });
-
-const levelTone: Record<string, string> = {
-  info: "text-primary",
-  debug: "text-muted-foreground",
-  warn: "text-warning",
-  error: "text-destructive",
-};
 
 const tokens = [
   { name: "--primary", value: "oklch(0.79 0.135 195)" },
@@ -41,50 +48,82 @@ const tokens = [
   { name: "--destructive", value: "oklch(0.63 0.19 22)" },
 ];
 
+function Panel({
+  icon: Icon,
+  title,
+  badge,
+  delay,
+  children,
+}: {
+  icon: typeof Braces;
+  title: string;
+  badge?: string;
+  delay?: number;
+  children: React.ReactNode;
+}) {
+  return (
+    <GlassPanel className="p-0" delay={delay}>
+      <div className="flex items-center gap-2 border-b border-border px-5 py-3.5">
+        <Icon className="size-4 text-primary" />
+        <h3 className="font-display text-base font-semibold">{title}</h3>
+        {badge && (
+          <Badge variant="secondary" className="ml-auto text-[10px]">
+            {badge}
+          </Badge>
+        )}
+      </div>
+      <div className="p-4">{children}</div>
+    </GlassPanel>
+  );
+}
+
 function DeveloperPage() {
   return (
     <div className="space-y-6">
       <PageHeader
         title="Developer"
-        description="Inspect runtime output and the design system powering Nexora."
+        description="Runtime observability, backups and the design system powering Nexora."
         actions={
-          <Button variant="outline" size="sm" className="gap-2">
-            <KeyRound className="size-4" /> API keys
-          </Button>
+          <Badge variant="outline" className="font-mono text-[10px]">
+            {releaseLabel()}
+          </Badge>
         }
       />
 
-      <GlassPanel className="p-0">
-        <div className="flex items-center gap-2 border-b border-border px-5 py-3.5">
-          <TerminalSquare className="size-4 text-primary" />
-          <h3 className="font-display text-base font-semibold">Runtime log</h3>
-          <Badge variant="secondary" className="ml-auto text-[10px]">
-            live · mock
-          </Badge>
-        </div>
-        <div className="space-y-1 p-4 font-mono text-xs">
-          {logs.map((l, i) => (
-            <motion.div
-              key={l.id}
-              initial={{ opacity: 0, x: -6 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.05 }}
-              className="grid grid-cols-[auto_auto_auto_minmax(0,1fr)] items-baseline gap-3 rounded-md px-2 py-1.5 hover:bg-accent/40"
-            >
-              <span className="text-muted-foreground/70">{l.time}</span>
-              <span className={cn("w-12 uppercase", levelTone[l.level])}>{l.level}</span>
-              <span className="text-muted-foreground">[{l.scope}]</span>
-              <span className="truncate">{l.message}</span>
-            </motion.div>
-          ))}
-        </div>
-      </GlassPanel>
+      <Panel icon={TerminalSquare} title="Runtime log" badge="live">
+        <ErrorBoundary scope="developer.logs">
+          <LogViewer />
+        </ErrorBoundary>
+      </Panel>
 
-      <GlassPanel className="p-5" delay={0.1}>
-        <h3 className="flex items-center gap-2 font-display text-base font-semibold">
-          <Braces className="size-4 text-primary" /> Design tokens
-        </h3>
-        <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+      <Panel icon={Gauge} title="Metrics" delay={0.05}>
+        <ErrorBoundary scope="developer.metrics">
+          <Suspense fallback={<PanelSkeleton label="Loading metrics" />}>
+            <MetricsPanel />
+          </Suspense>
+        </ErrorBoundary>
+      </Panel>
+
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Panel icon={DatabaseBackup} title="Backup & restore" delay={0.08}>
+          <ErrorBoundary scope="developer.backup">
+            <Suspense fallback={<PanelSkeleton label="Loading backup tools" />}>
+              <BackupPanel />
+            </Suspense>
+          </ErrorBoundary>
+        </Panel>
+
+        <Panel icon={ShieldCheck} title="Privacy & telemetry" delay={0.1}>
+          <ErrorBoundary scope="developer.telemetry">
+            <Suspense fallback={<PanelSkeleton label="Loading privacy controls" />}>
+              <TelemetryConsent />
+            </Suspense>
+          </ErrorBoundary>
+        </Panel>
+      </div>
+
+      <Panel icon={Braces} title="Design tokens" delay={0.12}>
+        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {tokens.map((t) => (
             <div
               key={t.name}
@@ -101,7 +140,7 @@ function DeveloperPage() {
             </div>
           ))}
         </div>
-      </GlassPanel>
+      </Panel>
     </div>
   );
 }
