@@ -17,6 +17,8 @@ import { toApiMessage } from "@/lib/api-response";
 interface AuthResult {
   success: boolean;
   message: string;
+  /** True when the account was created but email confirmation is still pending. */
+  needsConfirmation?: boolean;
 }
 
 interface AuthContextValue {
@@ -84,7 +86,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signUp = useCallback(
     async (name: string, email: string, password: string): Promise<AuthResult> => {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -93,7 +95,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         },
       });
       if (error) return { success: false, message: error.message };
-      return { success: true, message: "Account created" };
+      // With email confirmation enabled signUp returns no session — the user
+      // must confirm via the emailed link before the app is accessible.
+      const needsConfirmation = !data.session;
+      return {
+        success: true,
+        message: needsConfirmation ? "Account created — confirmation email sent" : "Account created",
+        needsConfirmation,
+      };
     },
     [],
   );
