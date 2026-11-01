@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Loader2 } from "lucide-react";
+import { Loader2, MailCheck } from "lucide-react";
 import { toast } from "sonner";
 import { AuthLayout } from "@/features/auth/auth-layout";
 import { useAuth } from "@/features/auth/auth-context";
@@ -32,6 +32,7 @@ function RegisterPage() {
   const [values, setValues] = useState({ name: "", email: "", password: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [pending, setPending] = useState(false);
+  const [confirmationEmail, setConfirmationEmail] = useState<string | null>(null);
 
   function set(key: keyof typeof values) {
     return (event: React.ChangeEvent<HTMLInputElement>) =>
@@ -53,9 +54,52 @@ function RegisterPage() {
       toast.error(result.message);
       return;
     }
+    if (result.needsConfirmation) {
+      setConfirmationEmail(parsed.data.email);
+      return;
+    }
     toast.success("Account created — you're in.");
     void navigate({ to: "/", replace: true });
   }
+
+  if (confirmationEmail) {
+    return (
+      <AuthLayout
+        title="Confirm your email"
+        subtitle={`We sent a confirmation link to ${confirmationEmail}. Click it to activate your workspace, then sign in.`}
+        footer={
+          <>
+            Didn't get it?{" "}
+            <button
+              type="button"
+              onClick={() => setConfirmationEmail(null)}
+              className="text-primary hover:underline"
+            >
+              Try again
+            </button>{" "}
+            or{" "}
+            <Link to="/auth" className="text-primary hover:underline">
+              sign in
+            </Link>
+          </>
+        }
+      >
+        <div className="space-y-4 text-center">
+          <div className="mx-auto grid size-14 place-items-center rounded-2xl bg-primary/12">
+            <MailCheck className="size-7 text-primary" />
+          </div>
+          <p className="text-sm leading-relaxed text-muted-foreground">
+            Your account exists but stays inactive until the link is clicked. The email can take a
+            minute or two to arrive — check your spam folder if nothing shows up.
+          </p>
+          <Button variant="outline" className="w-full" asChild>
+            <Link to="/auth">Back to sign in</Link>
+          </Button>
+        </div>
+      </AuthLayout>
+    );
+  }
+
 
   return (
     <AuthLayout
