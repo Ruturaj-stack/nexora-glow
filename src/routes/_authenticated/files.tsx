@@ -1,13 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { motion } from "framer-motion";
-import { useState } from "react";
-import { FileText, FolderOpen, Upload } from "lucide-react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { FileSearch, FolderOpen, Info, MessageSquare } from "lucide-react";
 import { PageHeader } from "@/components/common/page-header";
 import { GlassPanel } from "@/components/common/glass-panel";
-import { files } from "@/data/mock";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 
 export const Route = createFileRoute("/_authenticated/files")({
   head: () => ({
@@ -15,12 +10,12 @@ export const Route = createFileRoute("/_authenticated/files")({
       { title: "Files — Nexora AI Workspace" },
       {
         name: "description",
-        content: "Every document Nexora has indexed, with status and last-modified detail.",
+        content: "Document library status for Nexora: what is available today and what is planned.",
       },
       { property: "og:title", content: "Files — Nexora AI Workspace" },
       {
         property: "og:description",
-        content: "Every document Nexora has indexed, with status and last-modified detail.",
+        content: "Document library status for your Nexora workspace.",
       },
     ],
   }),
@@ -28,80 +23,55 @@ export const Route = createFileRoute("/_authenticated/files")({
 });
 
 function FilesPage() {
-  const [q, setQ] = useState("");
-  const filtered = files.filter((f) => f.name.toLowerCase().includes(q.toLowerCase()));
+  const navigate = useNavigate();
 
   return (
     <div className="space-y-6">
       <PageHeader
         title="Files"
-        description="Indexed documents available to the assistant's retrieval layer."
-        actions={
-          <Button size="sm" className="gap-2">
-            <Upload className="size-4" /> Upload
-          </Button>
-        }
+        description="Documents available to the assistant's retrieval layer."
       />
 
-      <GlassPanel className="p-5">
-        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 sm:flex sm:justify-between">
-          <h3 className="flex min-w-0 items-center gap-2 truncate font-display text-base font-semibold">
-            <FolderOpen className="size-4 shrink-0 text-primary" /> Workspace library
-          </h3>
-          <Input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="Search files…"
-            className="h-9 w-full sm:w-64"
-          />
+      <GlassPanel className="p-8 text-center sm:p-12">
+        <div className="mx-auto grid size-14 place-items-center rounded-2xl bg-primary/12">
+          <FileSearch className="size-7 text-primary" />
         </div>
+        <h2 className="mt-5 font-display text-lg font-semibold">Document indexing isn't connected yet</h2>
+        <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
+          Nexora can't browse or search a file library today — there's no document store or retrieval
+          index behind this page yet, so we won't show one that doesn't exist.
+        </p>
+        <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <Button variant="outline" className="gap-2" onClick={() => navigate({ to: "/chat" })}>
+            <MessageSquare className="size-4 text-primary" />
+            Share a file in Chat
+          </Button>
+        </div>
+      </GlassPanel>
 
-        <div className="mt-4 overflow-x-auto">
-          <table className="w-full min-w-[560px] text-sm">
-            <thead>
-              <tr className="border-b border-border text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
-                <th className="py-2 text-left font-medium">Name</th>
-                <th className="py-2 text-left font-medium">Kind</th>
-                <th className="py-2 text-left font-medium">Size</th>
-                <th className="py-2 text-left font-medium">Modified</th>
-                <th className="py-2 text-right font-medium">Index</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((f, i) => (
-                <motion.tr
-                  key={f.id}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: i * 0.04 }}
-                  className="border-b border-border/60 transition-colors last:border-0 hover:bg-accent/40"
-                >
-                  <td className="py-3 pr-3">
-                    <span className="flex items-center gap-2.5">
-                      <FileText className="size-4 shrink-0 text-muted-foreground" />
-                      <span className="truncate font-medium">{f.name}</span>
-                    </span>
-                  </td>
-                  <td className="py-3 pr-3 text-muted-foreground">{f.kind}</td>
-                  <td className="py-3 pr-3 font-mono text-xs text-muted-foreground">{f.size}</td>
-                  <td className="py-3 pr-3 text-muted-foreground">{f.modified}</td>
-                  <td className="py-3 text-right">
-                    <Badge
-                      variant="secondary"
-                      className={
-                        f.indexed ? "bg-success/12 text-success" : "bg-muted text-muted-foreground"
-                      }
-                    >
-                      {f.indexed ? "Indexed" : "Pending"}
-                    </Badge>
-                  </td>
-                </motion.tr>
-              ))}
-            </tbody>
-          </table>
-          {filtered.length === 0 && (
-            <p className="py-10 text-center text-sm text-muted-foreground">No files match.</p>
-          )}
+      <GlassPanel className="p-5">
+        <div className="flex items-start gap-3">
+          <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary">
+            <Info className="size-4" />
+          </span>
+          <div className="min-w-0 text-sm">
+            <p className="font-medium">What works today</p>
+            <ul className="mt-2 space-y-1.5 text-xs leading-relaxed text-muted-foreground">
+              <li>
+                <span className="inline-flex items-center gap-1.5">
+                  <FolderOpen className="size-3.5 shrink-0" />
+                  <span>
+                    Files attached in a chat conversation are uploaded, stored with that conversation and
+                    readable by the assistant there.
+                  </span>
+                </span>
+              </li>
+              <li className="text-muted-foreground/80">
+                A cross-conversation document library with indexing and search needs a document-store
+                backend that isn't built yet.
+              </li>
+            </ul>
+          </div>
         </div>
       </GlassPanel>
     </div>
