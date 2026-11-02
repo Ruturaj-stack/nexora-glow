@@ -4,9 +4,8 @@ import { useMemo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
+  Activity,
   Brain,
-  Cpu,
-  Loader2,
   MessageSquare,
   MonitorSmartphone,
   RefreshCcw,
@@ -81,7 +80,6 @@ function useWorkspaceData() {
 
 function Dashboard() {
   const orbState = useAppStore((s) => s.orbState);
-  const setDraft = useAppStore; // placeholder removed below
   const { profile } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -174,10 +172,10 @@ function Dashboard() {
           delay={0.1}
         />
         <StatCard
-          label="Response latency"
-          value={conversations.isFetching ? "…" : "—"}
-          delta="Measured per chat turn"
-          icon={Cpu}
+          label="Active flows"
+          value={workflows.isLoading ? "…" : `${enabledFlows}`}
+          delta={workflows.error ? "Unavailable" : `of ${workflows.data?.length ?? 0} automations`}
+          icon={Workflow}
           delay={0.15}
         />
         <StatCard
@@ -315,4 +313,3 @@ function Dashboard() {
   );
 }
 
-import { Activity } from "lucide-react";
