@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 export type OrbState = "idle" | "listening" | "thinking" | "speaking" | "offline";
 
@@ -9,6 +10,13 @@ export interface NexoraNotification {
   time: string;
   tone: "info" | "success" | "warning";
   read: boolean;
+}
+
+export interface UiPrefs {
+  /** Glass blur strength, 0–100, applied app-wide. */
+  glass: number;
+  reducedMotion: boolean;
+  compact: boolean;
 }
 
 interface AppState {
