@@ -1,4 +1,5 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, MotionConfig } from "framer-motion";
+import { useEffect } from "react";
 import type { ReactNode } from "react";
 import { useRouterState } from "@tanstack/react-router";
 import { Sidebar } from "./sidebar";
@@ -15,8 +16,15 @@ import { usePermissionSync } from "@/features/tools/use-tools";
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const { mobileNavOpen, setMobileNavOpen } = useAppStore();
+  const { mobileNavOpen, setMobileNavOpen, uiPrefs } = useAppStore();
   usePermissionSync();
+
+  // Glass intensity is a user preference persisted in the app store.
+  useEffect(() => {
+    document.documentElement.style.setProperty("--glass-intensity", String(uiPrefs.glass / 100));
+    return () => document.documentElement.style.removeProperty("--glass-intensity");
+  }, [uiPrefs.glass]);
+
 
 
   return (
