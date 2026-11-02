@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import {
   Activity,
   Brain,
+  Loader2,
   MessageSquare,
   MonitorSmartphone,
   RefreshCcw,
