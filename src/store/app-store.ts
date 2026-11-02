@@ -37,6 +37,9 @@ interface AppState {
   orbState: OrbState;
   setOrbState: (s: OrbState) => void;
 
+  uiPrefs: UiPrefs;
+  setUiPref: (patch: Partial<UiPrefs>) => void;
+
   notifications: NexoraNotification[];
   pushNotification: (notification: NexoraNotification) => void;
   markAllRead: () => void;
@@ -88,7 +91,10 @@ export const useAppStore = create<AppState>((set) => ({
   orbState: "idle",
   setOrbState: (s) => set({ orbState: s }),
 
-  notifications: seedNotifications,
+  uiPrefs: { glass: 70, reducedMotion: false, compact: false },
+  setUiPref: (patch) => set((s) => ({ uiPrefs: { ...s.uiPrefs, ...patch } })),
+
+  notifications: [],
   pushNotification: (notification) =>
     set((s) => ({ notifications: [notification, ...s.notifications].slice(0, 50) })),
   markAllRead: () =>
