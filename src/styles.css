@@ -190,7 +190,7 @@
 @utility glass {
   background-color: color-mix(in oklab, var(--surface) 62%, transparent);
   background-image: var(--gradient-surface);
-  backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(calc(18px * var(--glass-intensity, 1))) saturate(140%);
   border: 1px solid var(--glass-border);
   box-shadow: var(--shadow-glass);
 }
@@ -198,7 +198,7 @@
 @utility glass-strong {
   background-color: color-mix(in oklab, var(--surface-elevated) 82%, transparent);
   background-image: var(--gradient-surface);
-  backdrop-filter: blur(28px) saturate(150%);
+  backdrop-filter: blur(calc(28px * var(--glass-intensity, 1))) saturate(150%);
   border: 1px solid var(--glass-border);
   box-shadow: var(--shadow-glass);
 }
