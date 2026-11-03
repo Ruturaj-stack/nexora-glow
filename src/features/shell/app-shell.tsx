@@ -27,8 +27,6 @@ export function AppShell({ children }: { children: ReactNode }) {
     };
   }, [uiPrefs.glass]);
 
-
-
   return (
     <MotionConfig reducedMotion={uiPrefs.reducedMotion ? "always" : "user"}>
       <TooltipProvider delayDuration={200}>

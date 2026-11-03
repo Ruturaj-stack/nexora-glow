@@ -92,9 +92,14 @@ function Dashboard() {
   const firstName = profile?.name?.split(/\s+/)[0] ?? "there";
   const summary = useMemo(() => {
     const parts: string[] = [];
-    if (conversations.data) parts.push(`${conversations.data.length} conversation${conversations.data.length === 1 ? "" : "s"}`);
-    if (memories.data) parts.push(`${memories.data.length} memor${memories.data.length === 1 ? "y" : "ies"}`);
-    if (devices.data) parts.push(`${devices.data.length} device${devices.data.length === 1 ? "" : "s"} paired`);
+    if (conversations.data)
+      parts.push(
+        `${conversations.data.length} conversation${conversations.data.length === 1 ? "" : "s"}`,
+      );
+    if (memories.data)
+      parts.push(`${memories.data.length} memor${memories.data.length === 1 ? "y" : "ies"}`);
+    if (devices.data)
+      parts.push(`${devices.data.length} device${devices.data.length === 1 ? "" : "s"} paired`);
     if (workflows.data) parts.push(`${enabledFlows} of ${workflows.data.length} flows active`);
     return parts.length ? `Your workspace holds ${parts.join(", ")}.` : "Loading your workspace…";
   }, [conversations.data, memories.data, devices.data, workflows.data, enabledFlows]);
@@ -110,10 +115,12 @@ function Dashboard() {
     try {
       const created = (await createConversation({ data: { title: "Morning briefing" } })).data;
       const { useChatStore } = await import("@/store/chat-store");
-      useChatStore.getState().setDraft(
-        created.id,
-        "Good morning! Run my briefing: what's on my plate, how my devices are doing, and anything I pinned recently.",
-      );
+      useChatStore
+        .getState()
+        .setDraft(
+          created.id,
+          "Good morning! Run my briefing: what's on my plate, how my devices are doing, and anything I pinned recently.",
+        );
       await queryClient.invalidateQueries({ queryKey: ["conversations"] });
       void navigate({ to: "/chat/$conversationId", params: { conversationId: created.id } });
     } catch (error) {
@@ -168,7 +175,11 @@ function Dashboard() {
         <StatCard
           label="Memories"
           value={memories.isLoading ? "…" : String(memories.data?.length ?? 0)}
-          delta={memories.error ? "Unavailable" : `${(memories.data ?? []).filter((m) => m.pinned).length} pinned`}
+          delta={
+            memories.error
+              ? "Unavailable"
+              : `${(memories.data ?? []).filter((m) => m.pinned).length} pinned`
+          }
           icon={Brain}
           delay={0.1}
         />
@@ -181,9 +192,7 @@ function Dashboard() {
         />
         <StatCard
           label="Devices online"
-          value={
-            devices.isLoading ? "…" : `${onlineDevices}/${devices.data?.length ?? 0}`
-          }
+          value={devices.isLoading ? "…" : `${onlineDevices}/${devices.data?.length ?? 0}`}
           delta={
             devices.error
               ? "Unavailable"
@@ -191,15 +200,14 @@ function Dashboard() {
                 ? "Some devices unreachable"
                 : "All reachable"
           }
-          trend={devices.error ? undefined : onlineDevices < (devices.data?.length ?? 0) ? "down" : "up"}
+          trend={
+            devices.error ? undefined : onlineDevices < (devices.data?.length ?? 0) ? "down" : "up"
+          }
           icon={MonitorSmartphone}
           delay={0.2}
         >
           {devices.data && devices.data.length > 0 && (
-            <Progress
-              value={(onlineDevices / devices.data.length) * 100}
-              className="h-1.5"
-            />
+            <Progress value={(onlineDevices / devices.data.length) * 100} className="h-1.5" />
           )}
         </StatCard>
       </div>
@@ -209,8 +217,16 @@ function Dashboard() {
           <div className="flex items-center justify-between">
             <h3 className="font-display text-base font-semibold">Automation activity</h3>
             <div className="flex items-center gap-2">
-              {workflows.isFetching && <Loader2 className="size-3.5 animate-spin text-muted-foreground" />}
-              <Button variant="ghost" size="icon" className="size-7" onClick={refreshAll} aria-label="Refresh data">
+              {workflows.isFetching && (
+                <Loader2 className="size-3.5 animate-spin text-muted-foreground" />
+              )}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-7"
+                onClick={refreshAll}
+                aria-label="Refresh data"
+              >
                 <RefreshCcw className="size-3.5" />
               </Button>
               <Badge variant="secondary" className="gap-1.5">
@@ -222,7 +238,9 @@ function Dashboard() {
           <div className="mt-4 space-y-2">
             {workflows.error && (
               <div className="flex items-center justify-between gap-3 rounded-xl border border-destructive/40 bg-destructive/5 p-3 text-sm">
-                <span className="text-destructive">Automations couldn't load: {workflows.error.message}</span>
+                <span className="text-destructive">
+                  Automations couldn't load: {workflows.error.message}
+                </span>
                 <Button variant="outline" size="sm" onClick={() => workflows.refetch()}>
                   Retry
                 </Button>
@@ -264,7 +282,12 @@ function Dashboard() {
             {workflows.data && workflows.data.length === 0 && (
               <div className="rounded-xl border border-dashed border-border p-6 text-center">
                 <p className="text-sm text-muted-foreground">No automations yet.</p>
-                <Button variant="outline" size="sm" className="mt-3" onClick={() => navigate({ to: "/automation" })}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="mt-3"
+                  onClick={() => navigate({ to: "/automation" })}
+                >
                   Create your first flow
                 </Button>
               </div>
@@ -299,13 +322,18 @@ function Dashboard() {
             {devices.data && devices.data.length === 0 && (
               <p className="py-6 text-center text-sm text-muted-foreground">
                 No devices paired yet.{" "}
-                <button className="text-primary hover:underline" onClick={() => navigate({ to: "/devices" })}>
+                <button
+                  className="text-primary hover:underline"
+                  onClick={() => navigate({ to: "/devices" })}
+                >
                   Pair one
                 </button>
               </p>
             )}
             {devices.error && (
-              <p className="text-xs text-destructive">Devices couldn't load: {devices.error.message}</p>
+              <p className="text-xs text-destructive">
+                Devices couldn't load: {devices.error.message}
+              </p>
             )}
           </div>
         </GlassPanel>
@@ -313,4 +341,3 @@ function Dashboard() {
     </div>
   );
 }
-

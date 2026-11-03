@@ -100,7 +100,6 @@ function RegisterPage() {
     );
   }
 
-
   return (
     <AuthLayout
       title="Create your workspace"
@@ -117,7 +116,13 @@ function RegisterPage() {
       <form onSubmit={onSubmit} className="space-y-4">
         <div className="space-y-1.5">
           <Label htmlFor="name">Full name</Label>
-          <Input id="name" autoComplete="name" value={values.name} onChange={set("name")} placeholder="Ada Lovelace" />
+          <Input
+            id="name"
+            autoComplete="name"
+            value={values.name}
+            onChange={set("name")}
+            placeholder="Ada Lovelace"
+          />
           {errors.name ? <p className="text-xs text-destructive">{errors.name}</p> : null}
         </div>
 

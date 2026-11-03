@@ -3,7 +3,17 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Brain, Loader2, Pin, PinOff, Plus, RefreshCcw, Search, Sparkles, Trash2 } from "lucide-react";
+import {
+  Brain,
+  Loader2,
+  Pin,
+  PinOff,
+  Plus,
+  RefreshCcw,
+  Search,
+  Sparkles,
+  Trash2,
+} from "lucide-react";
 import { PageHeader } from "@/components/common/page-header";
 import { GlassPanel } from "@/components/common/glass-panel";
 import { StatCard } from "@/components/common/stat-card";
@@ -213,7 +223,13 @@ function MemoryPage() {
           }
           icon={Brain}
         />
-        <StatCard label="Pinned" value={memoriesQuery.isLoading ? "…" : String(pinnedCount)} delta="Always in context" icon={Pin} delay={0.05} />
+        <StatCard
+          label="Pinned"
+          value={memoriesQuery.isLoading ? "…" : String(pinnedCount)}
+          delta="Always in context"
+          icon={Pin}
+          delay={0.05}
+        />
         <StatCard
           label="Categories"
           value={memoriesQuery.isLoading ? "…" : String(categories.size)}
@@ -232,7 +248,13 @@ function MemoryPage() {
             {memoriesQuery.isFetching && (
               <Loader2 className="size-3.5 animate-spin text-muted-foreground" />
             )}
-            <Button variant="ghost" size="icon" className="size-8" onClick={refresh} aria-label="Refresh memories">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-8"
+              onClick={refresh}
+              aria-label="Refresh memories"
+            >
               <RefreshCcw className="size-3.5" />
             </Button>
             <Input
@@ -246,7 +268,9 @@ function MemoryPage() {
 
         {memoriesQuery.error && (
           <div className="mt-4 flex items-center justify-between gap-3 rounded-xl border border-destructive/40 bg-destructive/5 p-3 text-sm">
-            <span className="text-destructive">Memories couldn't load: {memoriesQuery.error.message}</span>
+            <span className="text-destructive">
+              Memories couldn't load: {memoriesQuery.error.message}
+            </span>
             <Button variant="outline" size="sm" onClick={refresh}>
               Retry
             </Button>

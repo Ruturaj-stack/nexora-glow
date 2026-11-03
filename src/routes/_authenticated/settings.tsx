@@ -162,7 +162,11 @@ function SettingsPage() {
           <Row
             label="Role"
             hint="Access level in this workspace"
-            control={<Badge variant="secondary" className="capitalize">{profile?.role ?? "user"}</Badge>}
+            control={
+              <Badge variant="secondary" className="capitalize">
+                {profile?.role ?? "user"}
+              </Badge>
+            }
           />
           <Row
             label="Member since"
@@ -175,7 +179,12 @@ function SettingsPage() {
           />
         </Section>
 
-        <Section icon={Palette} title="Appearance" description="Theme and motion — stored on this device" delay={0.05}>
+        <Section
+          icon={Palette}
+          title="Appearance"
+          description="Theme and motion — stored on this device"
+          delay={0.05}
+        >
           <Row
             label="Glass intensity"
             hint="Blur strength across panels"
@@ -222,7 +231,12 @@ function SettingsPage() {
           </div>
         </Section>
 
-        <Section icon={Bell} title="Notifications" description="Alerts and delivery — saved to your account" delay={0.1}>
+        <Section
+          icon={Bell}
+          title="Notifications"
+          description="Alerts and delivery — saved to your account"
+          delay={0.1}
+        >
           <Row
             label="Device & automation alerts"
             hint="Offline warnings and flow results in the notification centre"
@@ -236,7 +250,9 @@ function SettingsPage() {
             }
           />
           <p className="text-[11px] text-muted-foreground">
-            {settings ? "Synced to your account on change." : "First change creates your preferences."}
+            {settings
+              ? "Synced to your account on change."
+              : "First change creates your preferences."}
           </p>
         </Section>
 
