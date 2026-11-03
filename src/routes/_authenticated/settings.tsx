@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { AudioLines, Bell, Palette, Save, Shield, User } from "lucide-react";
@@ -83,6 +83,11 @@ function SettingsPage() {
   const orbState = useAppStore((s) => s.orbState);
 
   const [name, setName] = useState(profile?.name ?? "");
+
+  // The profile query resolves after mount — keep the field in sync with it.
+  useEffect(() => {
+    if (profile?.name) setName((current) => (current === "" ? profile.name : current));
+  }, [profile?.name]);
 
   const saveProfile = useMutation({
     mutationFn: async () =>
