@@ -49,32 +49,32 @@ interface AppState {
 export const useAppStore = create<AppState>()(
   persist(
     (set) => ({
-  sidebarCollapsed: false,
-  toggleSidebar: () => set((s) => ({ sidebarCollapsed: !s.sidebarCollapsed })),
-  setSidebarCollapsed: (v) => set({ sidebarCollapsed: v }),
+      sidebarCollapsed: false,
+      toggleSidebar: () => set((s) => ({ sidebarCollapsed: !s.sidebarCollapsed })),
+      setSidebarCollapsed: (v) => set({ sidebarCollapsed: v }),
 
-  mobileNavOpen: false,
-  setMobileNavOpen: (v) => set({ mobileNavOpen: v }),
+      mobileNavOpen: false,
+      setMobileNavOpen: (v) => set({ mobileNavOpen: v }),
 
-  paletteOpen: false,
-  setPaletteOpen: (v) => set({ paletteOpen: v }),
-  togglePalette: () => set((s) => ({ paletteOpen: !s.paletteOpen })),
+      paletteOpen: false,
+      setPaletteOpen: (v) => set({ paletteOpen: v }),
+      togglePalette: () => set((s) => ({ paletteOpen: !s.paletteOpen })),
 
-  notificationsOpen: false,
-  setNotificationsOpen: (v) => set({ notificationsOpen: v }),
+      notificationsOpen: false,
+      setNotificationsOpen: (v) => set({ notificationsOpen: v }),
 
-  orbState: "idle",
-  setOrbState: (s) => set({ orbState: s }),
+      orbState: "idle",
+      setOrbState: (s) => set({ orbState: s }),
 
-  uiPrefs: { glass: 70, reducedMotion: false, compact: false },
-  setUiPref: (patch) => set((s) => ({ uiPrefs: { ...s.uiPrefs, ...patch } })),
+      uiPrefs: { glass: 70, reducedMotion: false, compact: false },
+      setUiPref: (patch) => set((s) => ({ uiPrefs: { ...s.uiPrefs, ...patch } })),
 
-  notifications: [],
-  pushNotification: (notification) =>
-    set((s) => ({ notifications: [notification, ...s.notifications].slice(0, 50) })),
-  markAllRead: () =>
-    set((s) => ({ notifications: s.notifications.map((n) => ({ ...n, read: true })) })),
-  dismiss: (id) => set((s) => ({ notifications: s.notifications.filter((n) => n.id !== id) })),
+      notifications: [],
+      pushNotification: (notification) =>
+        set((s) => ({ notifications: [notification, ...s.notifications].slice(0, 50) })),
+      markAllRead: () =>
+        set((s) => ({ notifications: s.notifications.map((n) => ({ ...n, read: true })) })),
+      dismiss: (id) => set((s) => ({ notifications: s.notifications.filter((n) => n.id !== id) })),
     }),
     {
       name: "nexora-ui",

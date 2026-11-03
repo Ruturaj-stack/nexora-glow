@@ -22,10 +22,10 @@ export function AppShell({ children }: { children: ReactNode }) {
   // Glass intensity is a user preference persisted in the app store.
   useEffect(() => {
     document.documentElement.style.setProperty("--glass-intensity", String(uiPrefs.glass / 100));
-    return () => document.documentElement.style.removeProperty("--glass-intensity");
+    return () => {
+      document.documentElement.style.removeProperty("--glass-intensity");
+    };
   }, [uiPrefs.glass]);
-
-
 
   return (
     <MotionConfig reducedMotion={uiPrefs.reducedMotion ? "always" : "user"}>

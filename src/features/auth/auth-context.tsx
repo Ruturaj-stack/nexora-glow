@@ -100,7 +100,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const needsConfirmation = !data.session;
       return {
         success: true,
-        message: needsConfirmation ? "Account created — confirmation email sent" : "Account created",
+        message: needsConfirmation
+          ? "Account created — confirmation email sent"
+          : "Account created",
         needsConfirmation,
       };
     },

@@ -36,10 +36,12 @@ function FilesPage() {
         <div className="mx-auto grid size-14 place-items-center rounded-2xl bg-primary/12">
           <FileSearch className="size-7 text-primary" />
         </div>
-        <h2 className="mt-5 font-display text-lg font-semibold">Document indexing isn't connected yet</h2>
+        <h2 className="mt-5 font-display text-lg font-semibold">
+          Document indexing isn't connected yet
+        </h2>
         <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
-          Nexora can't browse or search a file library today — there's no document store or retrieval
-          index behind this page yet, so we won't show one that doesn't exist.
+          Nexora can't browse or search a file library today — there's no document store or
+          retrieval index behind this page yet, so we won't show one that doesn't exist.
         </p>
         <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Button variant="outline" className="gap-2" onClick={() => navigate({ to: "/chat" })}>
@@ -61,14 +63,14 @@ function FilesPage() {
                 <span className="inline-flex items-center gap-1.5">
                   <FolderOpen className="size-3.5 shrink-0" />
                   <span>
-                    Files attached in a chat conversation are uploaded, stored with that conversation and
-                    readable by the assistant there.
+                    Files attached in a chat conversation are uploaded, stored with that
+                    conversation and readable by the assistant there.
                   </span>
                 </span>
               </li>
               <li className="text-muted-foreground/80">
-                A cross-conversation document library with indexing and search needs a document-store
-                backend that isn't built yet.
+                A cross-conversation document library with indexing and search needs a
+                document-store backend that isn't built yet.
               </li>
             </ul>
           </div>

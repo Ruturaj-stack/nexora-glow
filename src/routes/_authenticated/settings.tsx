@@ -1,14 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { AudioLines, Bell, Palette, Shield, Sparkles } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { AudioLines, Bell, Palette, Save, Shield, User } from "lucide-react";
 import { PageHeader } from "@/components/common/page-header";
 import { GlassPanel } from "@/components/common/glass-panel";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { OrbStatePicker } from "@/features/orb/orb-state-picker";
 import { AIOrb } from "@/features/orb/ai-orb";
 import { useAppStore } from "@/store/app-store";
+import { useAuth } from "@/features/auth/auth-context";
+import { updateMe, updateMySettings } from "@/lib/users.functions";
+import { TelemetryConsent } from "@/features/telemetry/telemetry-consent";
 import { VoiceSettings } from "@/features/voice/voice-settings";
 
 export const Route = createFileRoute("/_authenticated/settings")({
@@ -17,12 +24,12 @@ export const Route = createFileRoute("/_authenticated/settings")({
       { title: "Settings — Nexora AI Workspace" },
       {
         name: "description",
-        content: "Tune Nexora's appearance, assistant behaviour, notifications and privacy.",
+        content: "Tune Nexora's account, appearance, notifications and privacy.",
       },
       { property: "og:title", content: "Settings — Nexora AI Workspace" },
       {
         property: "og:description",
-        content: "Tune Nexora's appearance, assistant behaviour, notifications and privacy.",
+        content: "Tune Nexora's account, appearance, notifications and privacy.",
       },
     ],
   }),
@@ -71,23 +78,138 @@ function Row({ label, hint, control }: { label: string; hint: string; control: R
 }
 
 function SettingsPage() {
+  const { profile, settings, refreshProfile } = useAuth();
+  const { uiPrefs, setUiPref } = useAppStore();
   const orbState = useAppStore((s) => s.orbState);
+
+  const [name, setName] = useState(profile?.name ?? "");
+
+  // The profile query resolves after mount — keep the field in sync with it.
+  useEffect(() => {
+    if (profile?.name) setName((current) => (current === "" ? profile.name : current));
+  }, [profile?.name]);
+
+  const saveProfile = useMutation({
+    mutationFn: async () =>
+      (await updateMe({ data: { name, avatar: profile?.avatar ?? null } })).data,
+    onSuccess: async () => {
+      await refreshProfile();
+      toast.success("Profile saved");
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
+  const saveSettings = useMutation({
+    mutationFn: async (notifications: boolean) =>
+      (
+        await updateMySettings({
+          data: {
+            theme: settings?.theme ?? "dark",
+            accentColor: settings?.accentColor ?? "aurora",
+            language: settings?.language ?? "en",
+            notifications,
+            timezone: settings?.timezone ?? Intl.DateTimeFormat().resolvedOptions().timeZone,
+          },
+        })
+      ).data,
+    onSuccess: async () => {
+      await refreshProfile();
+      toast.success("Settings saved");
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
 
   return (
     <div className="space-y-6">
       <PageHeader title="Settings" description="Preferences for the Nexora workspace." />
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <Section icon={Sparkles} title="Assistant" description="Persona and orb behaviour">
+        <Section icon={User} title="Account" description="Your profile in the workspace">
+          <div className="space-y-1.5">
+            <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4">
+              <div className="min-w-0">
+                <p className="text-sm font-medium">Display name</p>
+                <p className="text-xs text-muted-foreground">Shown on your account and greeting</p>
+              </div>
+              <Input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Your name"
+                className="h-9 w-40"
+                maxLength={60}
+              />
+            </div>
+          </div>
+          <Button
+            size="sm"
+            variant="secondary"
+            className="gap-2"
+            disabled={!name.trim() || name === profile?.name || saveProfile.isPending}
+            onClick={() => saveProfile.mutate()}
+          >
+            <Save className="size-3.5" />
+            {saveProfile.isPending ? "Saving…" : "Save profile"}
+          </Button>
           <Row
-            label="Assistant name"
-            hint="Shown throughout the workspace"
-            control={<Input defaultValue="Nexora" className="h-9 w-40" />}
+            label="Email"
+            hint="Your sign-in address"
+            control={
+              <Badge variant="secondary" className="max-w-48 truncate font-mono text-[11px]">
+                {profile?.email ?? "—"}
+              </Badge>
+            }
           />
           <Row
-            label="Wake phrase"
-            hint="Voice activation keyword"
-            control={<Input defaultValue="Hey Nexora" className="h-9 w-40" />}
+            label="Role"
+            hint="Access level in this workspace"
+            control={
+              <Badge variant="secondary" className="capitalize">
+                {profile?.role ?? "user"}
+              </Badge>
+            }
+          />
+          <Row
+            label="Member since"
+            hint="When your account was created"
+            control={
+              <span className="text-xs text-muted-foreground">
+                {profile ? new Date(profile.createdAt).toLocaleDateString() : "—"}
+              </span>
+            }
+          />
+        </Section>
+
+        <Section
+          icon={Palette}
+          title="Appearance"
+          description="Theme and motion — stored on this device"
+          delay={0.05}
+        >
+          <Row
+            label="Glass intensity"
+            hint="Blur strength across panels"
+            control={
+              <Slider
+                value={[uiPrefs.glass]}
+                min={0}
+                max={100}
+                step={5}
+                onValueChange={([glass]) => setUiPref({ glass })}
+                className="w-40"
+                aria-label="Glass intensity"
+              />
+            }
+          />
+          <Row
+            label="Reduced motion"
+            hint="Minimise animations across the app"
+            control={
+              <Switch
+                checked={uiPrefs.reducedMotion}
+                onCheckedChange={(reducedMotion) => setUiPref({ reducedMotion })}
+                aria-label="Reduced motion"
+              />
+            }
           />
           <div>
             <p className="text-sm font-medium">Orb preview</p>
@@ -96,20 +218,6 @@ function SettingsPage() {
               <OrbStatePicker />
             </div>
           </div>
-        </Section>
-
-        <Section icon={Palette} title="Appearance" description="Theme and motion" delay={0.05}>
-          <Row
-            label="Glass intensity"
-            hint="Blur strength across panels"
-            control={<Slider defaultValue={[70]} className="w-40" />}
-          />
-          <Row
-            label="Reduced motion"
-            hint="Minimise animations"
-            control={<Switch />}
-          />
-          <Row label="Compact density" hint="Tighter spacing" control={<Switch />} />
         </Section>
 
         <Section
@@ -123,23 +231,33 @@ function SettingsPage() {
           </div>
         </Section>
 
-        <Section icon={Bell} title="Notifications" description="Alerts and delivery" delay={0.1}>
-          <Row label="Device alerts" hint="Offline and health warnings" control={<Switch defaultChecked />} />
-          <Row label="Automation results" hint="Notify on flow completion" control={<Switch defaultChecked />} />
-          <Row label="Quiet hours" hint="Mute 22:00 – 07:00" control={<Switch />} />
+        <Section
+          icon={Bell}
+          title="Notifications"
+          description="Alerts and delivery — saved to your account"
+          delay={0.1}
+        >
+          <Row
+            label="Device & automation alerts"
+            hint="Offline warnings and flow results in the notification centre"
+            control={
+              <Switch
+                checked={settings?.notifications ?? true}
+                disabled={saveSettings.isPending}
+                onCheckedChange={(next) => saveSettings.mutate(next)}
+                aria-label="Device and automation alerts"
+              />
+            }
+          />
+          <p className="text-[11px] text-muted-foreground">
+            {settings
+              ? "Synced to your account on change."
+              : "First change creates your preferences."}
+          </p>
         </Section>
 
         <Section icon={Shield} title="Privacy" description="Data handling" delay={0.15}>
-          <Row label="Local-only memory" hint="Never sync memories off-device" control={<Switch defaultChecked />} />
-          <Row label="Anonymous telemetry" hint="Share crash diagnostics" control={<Switch />} />
-          <Row
-            label="Retention"
-            hint="Days before memories expire"
-            control={<Input defaultValue="365" className="h-9 w-24 text-right" />}
-          />
-          <Label className="block pt-1 text-[11px] font-normal text-muted-foreground">
-            Settings are local-state only in Phase 1.
-          </Label>
+          <TelemetryConsent />
         </Section>
       </div>
     </div>
