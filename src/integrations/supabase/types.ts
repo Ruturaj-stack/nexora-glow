@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      connected_accounts: {
+        Row: {
+          created_at: string
+          id: string
+          label: string
+          last_checked_at: string | null
+          metadata: Json
+          provider: string
+          scopes: string[]
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          label?: string
+          last_checked_at?: string | null
+          metadata?: Json
+          provider: string
+          scopes?: string[]
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          label?: string
+          last_checked_at?: string | null
+          metadata?: Json
+          provider?: string
+          scopes?: string[]
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       conversations: {
         Row: {
           created_at: string
@@ -304,6 +343,95 @@ export type Database = {
         }
         Relationships: []
       }
+      mcp_servers: {
+        Row: {
+          auth_header_name: string
+          auth_token_encrypted: string
+          created_at: string
+          description: string
+          enabled: boolean
+          id: string
+          last_connected_at: string | null
+          last_error: string
+          name: string
+          status: string
+          tools: Json
+          transport: string
+          updated_at: string
+          url: string
+          user_id: string
+        }
+        Insert: {
+          auth_header_name?: string
+          auth_token_encrypted?: string
+          created_at?: string
+          description?: string
+          enabled?: boolean
+          id?: string
+          last_connected_at?: string | null
+          last_error?: string
+          name: string
+          status?: string
+          tools?: Json
+          transport?: string
+          updated_at?: string
+          url: string
+          user_id: string
+        }
+        Update: {
+          auth_header_name?: string
+          auth_token_encrypted?: string
+          created_at?: string
+          description?: string
+          enabled?: boolean
+          id?: string
+          last_connected_at?: string | null
+          last_error?: string
+          name?: string
+          status?: string
+          tools?: Json
+          transport?: string
+          updated_at?: string
+          url?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      mcp_tool_permissions: {
+        Row: {
+          decision: string
+          id: string
+          server_id: string
+          tool_name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          decision?: string
+          id?: string
+          server_id: string
+          tool_name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          decision?: string
+          id?: string
+          server_id?: string
+          tool_name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mcp_tool_permissions_server_id_fkey"
+            columns: ["server_id"]
+            isOneToOne: false
+            referencedRelation: "mcp_servers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       memories: {
         Row: {
           category: string
@@ -459,6 +587,54 @@ export type Database = {
           id?: string
           name?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      scheduled_reminders: {
+        Row: {
+          created_at: string
+          due_at: string
+          id: string
+          kind: string
+          message: string
+          recurrence: Json
+          snooze_count: number
+          source: string
+          status: string
+          timezone: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          due_at: string
+          id?: string
+          kind?: string
+          message?: string
+          recurrence?: Json
+          snooze_count?: number
+          source?: string
+          status?: string
+          timezone?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          due_at?: string
+          id?: string
+          kind?: string
+          message?: string
+          recurrence?: Json
+          snooze_count?: number
+          source?: string
+          status?: string
+          timezone?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -626,6 +802,33 @@ export type Database = {
           theme?: string
           timezone?: string
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      web_searches: {
+        Row: {
+          created_at: string
+          id: string
+          provider: string
+          query: string
+          result_count: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          provider?: string
+          query: string
+          result_count?: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          provider?: string
+          query?: string
+          result_count?: number
           user_id?: string
         }
         Relationships: []
