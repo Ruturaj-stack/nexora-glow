@@ -11,7 +11,13 @@ import {
   writeClipboardText,
 } from "./services";
 import { useToolStore } from "@/store/tool-store";
-import type { ToolDefinition } from "./types";
+import { ToolError, type ToolDefinition } from "./types";
+import { webSearch } from "@/lib/search.functions";
+import { getWeather } from "@/lib/weather.functions";
+import { createReminder } from "@/lib/reminders.functions";
+import { emailImportant, emailSearch, emailToday } from "@/lib/email.functions";
+import { executeMcpTool } from "@/lib/mcp.functions";
+import { parseSchedule } from "@/lib/schedule-parser";
 
 /**
  * The single source of truth for everything the assistant is allowed to do.
@@ -400,6 +406,145 @@ export const TOOLS: AnyTool[] = [
       ctx.log(`${input.domain}.${input.service}`);
       const response = await callHomeAssistantService({ data: input });
       return response.data;
+    },
+  },
+
+  // ── Web intelligence ───────────────────────────────────────────────────
+  {
+    name: "web.search",
+    title: "Search the web",
+    description:
+      "Live internet search for current information (news, versions, prices, results). Returns real titles, URLs, snippets and dates.",
+    category: "web",
+    scopes: ["web"],
+    runtime: "browser",
+    timeoutMs: 45000,
+    schema: z.object({
+      query: z.string().trim().min(2).max(400),
+      limit: z.number().int().min(1).max(10).default(6),
+    }),
+    execute: async ({ query, limit }, ctx) => {
+      ctx.log(`Searching the web for “${query}”`);
+      const res = await webSearch({ data: { query, limit, scrapeTop: 0 } });
+      if (res.data.error) throw new ToolError("EXECUTION_FAILED", res.data.error);
+      ctx.log(`${res.data.results.length} sources from ${res.data.provider}`);
+      return res.data;
+    },
+  },
+  {
+    name: "weather.get",
+    title: "Get weather",
+    description:
+      "Real current conditions and up to 7-day forecast for a named place (temperature, feels-like, humidity, wind, rain probability, UV).",
+    category: "weather",
+    scopes: ["web"],
+    runtime: "browser",
+    timeoutMs: 30000,
+    schema: z.object({
+      location: z.string().trim().min(2).max(120),
+      days: z.number().int().min(1).max(7).default(3),
+    }),
+    execute: async ({ location, days }, ctx) => {
+      ctx.log(`Looking up weather for ${location}`);
+      const res = await getWeather({ data: { location, days } });
+      if (!res.data) throw new ToolError("NOT_FOUND", res.message);
+      return res.data;
+    },
+  },
+
+  // ── Alarms & reminders ─────────────────────────────────────────────────
+  {
+    name: "schedule.create",
+    title: "Schedule alarm / reminder / timer",
+    description:
+      "Schedules an alarm, reminder or timer from a natural phrase, e.g. \"remind me to submit my assignment at 5 PM\" or \"timer for 20 minutes\". Fails with a clarifying question if the time is ambiguous.",
+    category: "schedule",
+    scopes: ["schedule"],
+    runtime: "browser",
+    schema: z.object({
+      phrase: z.string().trim().min(3).max(300),
+      title: z.string().trim().max(200).optional(),
+    }),
+    execute: async ({ phrase, title }, ctx) => {
+      const parsed = parseSchedule(phrase);
+      if (!parsed.ok || !parsed.dueAt) {
+        throw new ToolError("INVALID_INPUT", parsed.needsClarification ?? "I need a time to schedule that.");
+      }
+      ctx.log(`Saving ${parsed.kind} for ${new Date(parsed.dueAt).toLocaleString()} (${parsed.timezone})`);
+      const res = await createReminder({
+        data: {
+          kind: parsed.kind,
+          title: title || parsed.title,
+          message: "",
+          dueAt: parsed.dueAt,
+          timezone: parsed.timezone,
+          recurrence: parsed.recurrence,
+          source: "chat",
+        },
+      });
+      const { scheduleLocalAlert } = await import("@/features/reminders/notification-scheduler");
+      const delivery = await scheduleLocalAlert(res.data);
+      return { saved: res.data, delivery };
+    },
+  },
+
+  // ── Email (read-only) ──────────────────────────────────────────────────
+  {
+    name: "email.today",
+    title: "Today's emails",
+    description: "Reads today's received emails from the connected Gmail inbox and classifies them, with reasons.",
+    category: "email",
+    scopes: ["email"],
+    runtime: "browser",
+    timeoutMs: 45000,
+    schema: empty,
+    execute: async () => (await emailToday()).data,
+  },
+  {
+    name: "email.important",
+    title: "Important emails",
+    description: "Lists recent emails that look critical, important or need action, explaining why each was flagged.",
+    category: "email",
+    scopes: ["email"],
+    runtime: "browser",
+    timeoutMs: 45000,
+    schema: empty,
+    execute: async () => (await emailImportant()).data,
+  },
+  {
+    name: "email.search",
+    title: "Search emails",
+    description: "Searches the connected inbox with Gmail search syntax, e.g. from:hr@company.com newer_than:7d.",
+    category: "email",
+    scopes: ["email"],
+    runtime: "browser",
+    timeoutMs: 45000,
+    schema: z.object({ query: z.string().trim().min(1).max(200), max: z.number().int().min(1).max(25).default(10) }),
+    execute: async ({ query, max }) => (await emailSearch({ data: { query, max } })).data,
+  },
+
+  // ── MCP ────────────────────────────────────────────────────────────────
+  {
+    name: "mcp.call",
+    title: "Run MCP tool",
+    description:
+      "Calls a tool discovered on one of your connected MCP servers. Requires serverId and the tool name listed on the Services page.",
+    category: "mcp",
+    scopes: ["mcp"],
+    runtime: "browser",
+    danger: true,
+    timeoutMs: 60000,
+    schema: z.object({
+      serverId: z.string().uuid(),
+      tool: z.string().min(1).max(120),
+      args: z.record(z.string(), z.any()).default({}),
+    }),
+    execute: async ({ serverId, tool, args }, ctx) => {
+      ctx.log(`Calling ${tool} via MCP`);
+      // The engine has already shown the permission prompt (danger tool), so this is confirmed.
+      const res = await executeMcpTool({ data: { serverId, tool, args, confirmed: true } });
+      if (res.data.isError) throw new ToolError("EXECUTION_FAILED", res.data.text || "The MCP tool reported an error.");
+      return res.data;
     },
   },
 ];
