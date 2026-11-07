@@ -11,6 +11,10 @@ export const PERMISSION_SCOPES = [
   "network",
   "notifications",
   "devices",
+  "web",
+  "email",
+  "schedule",
+  "mcp",
 ] as const;
 
 export type PermissionScope = (typeof PERMISSION_SCOPES)[number];
@@ -25,6 +29,10 @@ export const SCOPE_LABELS: Record<PermissionScope, string> = {
   network: "Network",
   notifications: "Notifications",
   devices: "Devices",
+  web: "Web & weather",
+  email: "Email (read-only)",
+  schedule: "Alarms & reminders",
+  mcp: "MCP servers",
 };
 
 /** Stored answer for a scope. `ask` prompts on every execution. */
@@ -45,7 +53,12 @@ export type ToolCategory =
   | "brightness"
   | "browser"
   | "notifications"
-  | "devices";
+  | "devices"
+  | "web"
+  | "weather"
+  | "schedule"
+  | "email"
+  | "mcp";
 
 export type ToolErrorCode =
   | "INVALID_INPUT"
